@@ -1,0 +1,132 @@
+EventCalendar
+=============
+
+Easily show multiple, overlapping events across calendar days and rows.
+
+Event calendar based off of http://www.cuppadev.co.uk/webdev/making-a-real-calendar-in-rails/ which in turn is based on CalendarHelper.
+
+After install, the "calendar" method will be available within your views.
+
+
+Install
+=======
+
+script/plugin install ssh://yourelevation.com/home/elevation/git/event_calendar.git
+
+To generate stylesheet, javascript, and sample bg grid images:
+
+script/generate event_calendar
+
+
+Example
+=======
+
+Say you have an event model, created with a migration like this:
+  create_table :events do |t|
+    t.string :name
+    t.datetime :start_at
+    t.datetime :end_at
+
+    t.timestamps
+  end
+  
+At minimum needs to have the start_at and end_at fields.
+
+In addition, event can have a color field, a hex value stored as a string, which determines the color of the event.
+Or you can override the default virtual attribute on the event model, if for example, you have a calendar model that events are associated with, where each calendar has its own color.
+
+Then in your event.rb, add:
+  has_event_calendar
+
+Then if you create and hookup the calendar controller
+
+routes.rb
+
+  map.calendar "/calendar/:year/:month", :controller => "calendar", :action => "index", :year => Time.now.year, :month => Time.now.month
+
+CalendarController.rb
+
+  def index
+    @month = params[:month].to_i
+    @year = params[:year].to_i
+
+    @shown_month = Date.civil(@year, @month)
+
+    @event_strips = Event.event_strips_for_month(@shown_month)
+  end
+
+Can create helper methods, or put this directly in the view. The key is our calendar method, which takes some options.
+
+  module CalendarHelper
+    def month_link(month_date)
+      link_to(month_date.strftime("%B"), {:month => month_date.month, :year => month_date.year})
+    end
+  
+    # custom options for this calendar
+    def event_calendar_options
+      { 
+        :year => @year,
+        :month => @month,
+        :event_strips => @event_strips,
+        :month_name_text => @shown_month.strftime("%B %Y"),
+        :previous_month_text => "<< " + month_link(@shown_month.last_month),
+        :next_month_text => month_link(@shown_month.next_month) + " >>"
+      }
+    end
+
+    def event_calendar
+      calendar event_calendar_options do |event|
+        "<a href='/events/#{event.id}' title=\"#{h(event.name)}\"><div>#{h(event.name)}</div></a>"
+      end
+    end
+  end
+
+Then in calendar view, simply:
+
+<%= event_calendar %>
+
+(Remember to include the stylesheet and javascript in your layout/view as well.)
+
+The default options for the calendar are:
+
+  defaults = {
+    :year => Time.now.year,
+    :month => Time.now.month,
+    :table_class => 'calendar',
+    :month_name_class => 'monthName',
+    :other_month_class => 'otherMonth',
+    :day_name_class => 'dayName',
+    :day_class => 'day',
+    :abbrev => (0..2),
+    :first_day_of_week => 0,
+    :accessible => false,
+    :show_today => true,
+    :month_name_text => Time.now.strftime("%B %Y"),
+    :previous_month_text => nil,
+    :next_month_text => nil,
+    :start => nil,
+    :event_strips => [],
+    :event_width => 85,
+    :event_height => 18,
+    :min_height => 70,
+    :event_margin => 2
+  }
+  
+You can override any of these by passing your options to the calendar method.
+Note, if you change the event_width option, you will need to change the .calendar background-image in the CSS file. There are two images included for 85px and 120px.
+
+The event select color is set in the event_calendar.js file.
+
+
+TODO
+====
+
+Add tests!
+
+
+Contributors
+============
+
+Jeff Schuil
+
+Copyright (c) 2009 Elevation, released under the MIT license

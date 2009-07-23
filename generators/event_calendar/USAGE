@@ -1,0 +1,12 @@
+Description:
+    Copies stylesheet, javascript, and sample background image files to the public folder.
+
+Example:
+    ./script/generate event_calendar
+
+    This will create:
+        public/stylesheets/event_calendar.css
+        public/javascripts/event_calendar.js
+        public/images/event_calendar
+        public/images/event_calendar/85_bg.gif
+        public/images/event_calendar/120_bg.gif
