@@ -2,8 +2,9 @@ EventCalendar
 =============
 
 Easily show multiple, overlapping events across calendar days and rows.
+See http://dev.elevationblog.com/2009/7/23/event-calendar-rails-plugin for a screenshot.
 
-Event calendar based off of http://www.cuppadev.co.uk/webdev/making-a-real-calendar-in-rails/ which in turn is based on CalendarHelper.
+Based off of http://www.cuppadev.co.uk/webdev/making-a-real-calendar-in-rails/ which in turn is based on CalendarHelper.
 
 After install, the "calendar" method will be available within your views.
 
