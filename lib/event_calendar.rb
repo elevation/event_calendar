@@ -16,20 +16,11 @@ module EventCalendar
       end
     end
     
+    # For the given month, find the start and end dates
+    # Find all the events within this range, and create event strips for them
     def event_strips_for_month(shown_date)
-     strip_start, strip_end = get_start_and_end_dates(shown_date)
-
-      events = self.find(
-        :all,
-        :conditions => [
-          '((start_at >= ? OR end_at <= ?) OR
-          (end_at != NULL AND (end_at >= ? AND start_at <= ?)))',
-          strip_start, strip_end,
-          strip_start, strip_end
-        ],
-        :order => 'start_at ASC'
-      )
-      
+      strip_start, strip_end = get_start_and_end_dates(shown_date)
+      events = events_for_date_range(strip_start, strip_end)
       event_strips = create_event_strips(strip_start, strip_end, events)
       event_strips
     end
@@ -42,6 +33,15 @@ module EventCalendar
       # the beginning of next month
       strip_end = beginning_of_week(shown_date.next_month + 7) - 1
       [strip_start, strip_end]
+    end
+    
+    # Get the events overlapping the given start and end dates
+    def events_for_date_range(start_d, end_d)
+      self.find(
+        :all,
+        :conditions => [ '(? <= end_at) AND (start_at <= ?)', start_d, end_d ],
+        :order => 'start_at ASC'
+      )
     end
     
     # Create the various strips that show evetns
@@ -57,7 +57,7 @@ module EventCalendar
         end_range = (end_date - strip_start).to_i
       
         # make sure the event is within our viewing range
-        if (start_range <= end_range) and (end_range > 0) 
+        if (start_range <= end_range) and (end_range >= 0) 
           range = start_range..end_range
           
           open_strip = space_in_current_strips?(event_strips, range)
