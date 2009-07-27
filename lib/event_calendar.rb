@@ -28,10 +28,12 @@ module EventCalendar
     # Expand start and end dates to show the previous month and next month's days,
     # that overlap with the shown months display
     def get_start_and_end_dates(shown_date)
+      # start with the first day of the given month
+      start_of_month = Date.civil(shown_date.year, shown_date.month, 1)
       # the end of last month
-      strip_start = beginning_of_week(shown_date)
+      strip_start = beginning_of_week(start_of_month)
       # the beginning of next month
-      strip_end = beginning_of_week(shown_date.next_month + 7) - 1
+      strip_end = beginning_of_week(start_of_month.next_month + 7) - 1
       [strip_start, strip_end]
     end
     
