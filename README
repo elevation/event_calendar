@@ -4,7 +4,7 @@ EventCalendar
 Easily show multiple, overlapping events across calendar days and rows.
 See http://dev.elevationblog.com/2009/7/23/event-calendar-rails-plugin for a screenshot.
 
-Based off of http://www.cuppadev.co.uk/webdev/making-a-real-calendar-in-rails/ which in turn is based on CalendarHelper.
+Based off of James Urquhart's http://www.cuppadev.co.uk/webdev/making-a-real-calendar-in-rails/ which in turn is based on Geoffrey Grosenbach's CalendarHelper.
 
 After install, the "calendar" method will be available within your views.
 
@@ -12,7 +12,7 @@ After install, the "calendar" method will be available within your views.
 Install
 =======
 
-script/plugin install ssh://yourelevation.com/home/elevation/git/event_calendar.git
+script/plugin install git://github.com/elevation/event_calendar.git
 
 To generate stylesheet, javascript, and sample bg grid images:
 
@@ -81,6 +81,8 @@ Can create helper methods, or put this directly in the view. The key is our cale
       end
     end
   end
+  
+Notice you can pass in a block to the calendar method. In this example I'm passing a link to the event details, and displaying the event's name.
 
 Then in calendar view, simply:
 
