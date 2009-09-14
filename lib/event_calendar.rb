@@ -32,8 +32,14 @@ module EventCalendar
       start_of_month = Date.civil(shown_date.year, shown_date.month, 1)
       # the end of last month
       strip_start = beginning_of_week(start_of_month)
-      # the beginning of next month
-      strip_end = beginning_of_week(start_of_month.next_month + 7) - 1
+      # the beginning of next month, unless this month ended evenly on the last day of the week
+      if start_of_month.next_month == beginning_of_week(start_of_month.next_month)
+        # last day of the month is also the last day of the week
+        strip_end = start_of_month.next_month - 1
+      else
+        # add the extra days from next month
+        strip_end = beginning_of_week(start_of_month.next_month + 7) - 1
+      end
       [strip_start, strip_end]
     end
     

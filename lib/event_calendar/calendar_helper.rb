@@ -165,28 +165,31 @@ module EventCalendar
           last_row = cur + 1
         end
       end
-      # other month days, after current month
-      (last + 1).upto(beginning_of_week(last + 7, first_weekday) - 1) do |d|
-        cal << %(<td class="#{options[:other_month_class]})
-        cal << " weekendDay" if weekend?(d)
-        cal << " beginning_of_week" if d.wday == first_weekday
-        cal << %(" style="width:#{event_width-2}px;)
-        if options[:accessible]
-          cal << %(">#{d.day}<span class='hidden'> #{Date::MONTHNAMES[d.mon]}</span></td>)
-        else
-          cal << %(">#{d.day}</td>)
-        end
-      end unless last.wday == last_weekday
+      # other month days, after current month, unless this month ended evenly on the last day of the week
+      if last+1 != beginning_of_week(last+1)
+        (last + 1).upto(beginning_of_week(last + 7, first_weekday) - 1) do |d|
+          cal << %(<td class="#{options[:other_month_class]})
+          cal << " weekendDay" if weekend?(d)
+          cal << " beginning_of_week" if d.wday == first_weekday
+          cal << %(" style="width:#{event_width-2}px;)
+          if options[:accessible]
+            cal << %(">#{d.day}<span class='hidden'> #{Date::MONTHNAMES[d.mon]}</span></td>)
+          else
+            cal << %(">#{d.day}</td>)
+          end
+        end unless last.wday == last_weekday
     
-      # last calendar rows events
-      content = calendar_row(event_strips,
-                             event_width,
-                             event_height,
-                             event_margin,
-                             start_row,
-                             last_row..(beginning_of_week(last + 7, first_weekday) - 1),
-                             &block)
-      cal << "</tr>#{event_row(content, min_height, event_height, event_margin)}</tbody></table>"
+        # last calendar rows events
+        content = calendar_row(event_strips,
+                               event_width,
+                               event_height,
+                               event_margin,
+                               start_row,
+                               last_row..(beginning_of_week(last + 7, first_weekday) - 1),
+                               &block)
+        cal << "</tr>#{event_row(content, min_height, event_height, event_margin)}"
+      end
+      cal << "</tbody></table>"
     end
   
     private
@@ -266,7 +269,7 @@ module EventCalendar
       end
     end
   
-    def beginning_of_week(date, start = 1)
+    def beginning_of_week(date, start = 0)
       days_to_beg = days_between(start, date.wday)
       date - days_to_beg
     end
