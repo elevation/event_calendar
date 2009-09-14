@@ -141,21 +141,26 @@ module EventCalendar
       end_at.to_date - start_at.to_date
     end
   
+    # start_d - start of the month, or start of the week
+    # end_d - end of the month, or end of the week
     def clip_range(start_d, end_d)
+      # make sure we are comparing date objects to date objects,
+      # otherwise timezones can cause problems
+      start_at_d = start_at.to_date
+      end_at_d = end_at.to_date
       # Clip start date, make sure it also ends on or after the start range
-      if (start_at < start_d and end_at >= start_d)
+      if (start_at_d < start_d and end_at_d >= start_d)
         clipped_start = start_d
       else
-        clipped_start = start_at.to_date
+        clipped_start = start_at_d
       end
     
       # Clip end date
-      if (end_at > end_d)
+      if (end_at_d > end_d)
         clipped_end = end_d
       else
-        clipped_end = end_at.to_date
+        clipped_end = end_at_d
       end
-    
       [clipped_start, clipped_end]
     end
   end

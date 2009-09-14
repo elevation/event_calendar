@@ -64,8 +64,8 @@ module EventCalendar
       block ||= Proc.new {|d| nil}
  
       defaults = {
-        :year => Time.now.year,
-        :month => Time.now.month,
+        :year => Time.zone.now.year,
+        :month => Time.zone.now.month,
         :table_class => 'calendar',
         :month_name_class => 'monthName',
         :other_month_class => 'otherMonth',
@@ -75,7 +75,7 @@ module EventCalendar
         :first_day_of_week => 0,
         :accessible => false,
         :show_today => true,
-        :month_name_text => Time.now.strftime("%B %Y"),
+        :month_name_text => Time.zone.now.strftime("%B %Y"),
         :previous_month_text => nil,
         :next_month_text => nil,
         :start => nil,
@@ -215,8 +215,6 @@ module EventCalendar
               # Event somewhere on this row
               # add 2 times the number of days into the week to account for borders
               cur_offs = (event_width*days_in_week) - 1
-              start_d = event.start_at.to_date
-              end_d = event.end_at.nil? ? start_d+1 : event.end_at.to_date+1
               event_content(event, dates[1]-dates[0]+1, cur_offs, idx, event_width, event_height, event_margin, &block)
             else
               nil
