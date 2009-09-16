@@ -18,8 +18,8 @@ module EventCalendar
     
     # For the given month, find the start and end dates
     # Find all the events within this range, and create event strips for them
-    def event_strips_for_month(shown_date)
-      strip_start, strip_end = get_start_and_end_dates(shown_date)
+    def event_strips_for_month(shown_date, first_day_of_week=0)
+      strip_start, strip_end = get_start_and_end_dates(shown_date, first_day_of_week)
       events = events_for_date_range(strip_start, strip_end)
       event_strips = create_event_strips(strip_start, strip_end, events)
       event_strips
@@ -27,18 +27,18 @@ module EventCalendar
     
     # Expand start and end dates to show the previous month and next month's days,
     # that overlap with the shown months display
-    def get_start_and_end_dates(shown_date)
+    def get_start_and_end_dates(shown_date, first_day_of_week=0)
       # start with the first day of the given month
       start_of_month = Date.civil(shown_date.year, shown_date.month, 1)
       # the end of last month
-      strip_start = beginning_of_week(start_of_month)
+      strip_start = beginning_of_week(start_of_month, first_day_of_week)
       # the beginning of next month, unless this month ended evenly on the last day of the week
-      if start_of_month.next_month == beginning_of_week(start_of_month.next_month)
+      if start_of_month.next_month == beginning_of_week(start_of_month.next_month, first_day_of_week)
         # last day of the month is also the last day of the week
         strip_end = start_of_month.next_month - 1
       else
         # add the extra days from next month
-        strip_end = beginning_of_week(start_of_month.next_month + 7) - 1
+        strip_end = beginning_of_week(start_of_month.next_month + 7, first_day_of_week) - 1
       end
       [strip_start, strip_end]
     end

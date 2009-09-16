@@ -166,7 +166,7 @@ module EventCalendar
         end
       end
       # other month days, after current month, unless this month ended evenly on the last day of the week
-      if last+1 != beginning_of_week(last+1)
+      if last+1 != beginning_of_week(last+1, first_weekday)
         (last + 1).upto(beginning_of_week(last + 7, first_weekday) - 1) do |d|
           cal << %(<td class="#{options[:other_month_class]})
           cal << " weekendDay" if weekend?(d)

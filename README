@@ -93,18 +93,18 @@ Then in calendar view, simply:
 The default options for the calendar are:
 
   defaults = {
-    :year => Time.now.year,
-    :month => Time.now.month,
+    :year => Time.zone.now.year,
+    :month => Time.zone.now.month,
     :table_class => 'calendar',
     :month_name_class => 'monthName',
     :other_month_class => 'otherMonth',
     :day_name_class => 'dayName',
     :day_class => 'day',
     :abbrev => (0..2),
-    :first_day_of_week => 0,
+    :first_day_of_week => 0, # See note below when setting this
     :accessible => false,
     :show_today => true,
-    :month_name_text => Time.now.strftime("%B %Y"),
+    :month_name_text => Time.zone.now.strftime("%B %Y"),
     :previous_month_text => nil,
     :next_month_text => nil,
     :start => nil,
@@ -116,9 +116,24 @@ The default options for the calendar are:
   }
   
 You can override any of these by passing your options to the calendar method.
-Note, if you change the event_width option, you will need to change the .calendar background-image in the CSS file. There are two images included for 85px and 120px.
 
-The event select color is set in the event_calendar.js file.
+NOTES
+=====
+
+* If you change the event_width option, you will need to change the .calendar background-image in the CSS file. There are two images included for 85px and 120px.
+
+
+* If you want to change the first day of the week from the default of Sunday (0), then set the new value in an instance variable and pass it to event_strips_for_month (in the controller), and to the event calendar options (in the helper/view).
+
+Controller:
+  @first_day_of_week = 1
+  @event_strips = Event.event_strips_for_month(@shown_month, @first_day_of_week)
+  
+Helper/View calendar options:
+  :first_day_of_week => @first_day_of_week
+
+
+* The event select color is set in the event_calendar.js file.
 
 
 TODO
