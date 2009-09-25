@@ -35,10 +35,10 @@ module EventCalendar
       # the beginning of next month, unless this month ended evenly on the last day of the week
       if start_of_month.next_month == beginning_of_week(start_of_month.next_month, first_day_of_week)
         # last day of the month is also the last day of the week
-        strip_end = start_of_month.next_month - 1
+        strip_end = start_of_month.next_month
       else
         # add the extra days from next month
-        strip_end = beginning_of_week(start_of_month.next_month + 7, first_day_of_week) - 1
+        strip_end = beginning_of_week(start_of_month.next_month + 7, first_day_of_week)
       end
       [strip_start, strip_end]
     end
@@ -47,7 +47,7 @@ module EventCalendar
     def events_for_date_range(start_d, end_d)
       self.find(
         :all,
-        :conditions => [ '(? <= end_at) AND (start_at <= ?)', start_d, end_d ],
+        :conditions => [ '(? <= end_at) AND (start_at < ?)', start_d.to_time.utc, end_d.to_time.utc ],
         :order => 'start_at ASC'
       )
     end
