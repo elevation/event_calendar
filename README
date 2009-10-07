@@ -44,7 +44,8 @@ Then if you create and hookup the calendar controller
 routes.rb
 
   map.calendar "/calendar/:year/:month", :controller => "calendar", :action => "index", :year => Time.now.year, :month => Time.now.month
-
+  map.calendar "/calendar/:year/:month/:day", :controller => "calendar", :action => "index", :year => Time.now.year, :month => Time.now.month, :day => Time.now.month
+  
 CalendarController.rb
 
   def index
@@ -112,7 +113,8 @@ The default options for the calendar are:
     :event_width => 85,
     :event_height => 18,
     :min_height => 70,
-    :event_margin => 2
+    :event_margin => 2,
+    :link_to_day => false
   }
   
 You can override any of these by passing your options to the calendar method.

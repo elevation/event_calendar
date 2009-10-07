@@ -83,7 +83,8 @@ module EventCalendar
         :event_width => 85,
         :event_height => 18,
         :min_height => 70,
-        :event_margin => 2
+        :event_margin => 2,
+        :link_to_day => false
       }
       options = defaults.merge options
     
@@ -150,7 +151,11 @@ module EventCalendar
         cell_attrs[:class] += " today" if (cur == Date.today) and options[:show_today]
         cell_attrs[:style] = "width:#{event_width-2}px;" # subtract 2 for the borders
         cell_attrs = cell_attrs.map {|k, v| %(#{k}="#{v}") }.join(" ")
-        cal << "<td #{cell_attrs}>#{cell_text}</td>"
+        if options[:link_to_day]
+          cal << "<td #{cell_attrs}>#{day_link(cell_text, cur)}</td>"
+        else 
+          cal << "<td #{cell_attrs}>#{cell_text}</td>"
+        end
       
         if cur.wday == last_weekday
           # calendar rows events
@@ -190,6 +195,10 @@ module EventCalendar
         cal << "</tr>#{event_row(content, min_height, event_height, event_margin)}"
       end
       cal << "</tbody></table>"
+    end
+    
+    def day_link(text, date)
+      link_to(text, "/calendar/#{date.year}/#{date.month}/#{date.day}"
     end
   
     private
