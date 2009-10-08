@@ -198,7 +198,7 @@ module EventCalendar
     end
     
     def day_link(text, date)
-      link_to(text, "/calendar/#{date.year}/#{date.month}/#{date.day}"
+      link_to(text, "/calendar/#{date.year}/#{date.month}/#{date.day}")
     end
   
     private
