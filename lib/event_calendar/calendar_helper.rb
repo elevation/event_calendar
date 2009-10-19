@@ -152,7 +152,8 @@ module EventCalendar
         cell_attrs[:style] = "width:#{event_width-2}px;" # subtract 2 for the borders
         cell_attrs = cell_attrs.map {|k, v| %(#{k}="#{v}") }.join(" ")
         if options[:link_to_day]
-          cal << "<td #{cell_attrs}>#{day_link(cell_text, cur)}</td>"
+          cal << "<td #{cell_attrs}>#{
+          (cell_text, cur)}</td>"
         else 
           cal << "<td #{cell_attrs}>#{cell_text}</td>"
         end
@@ -198,7 +199,7 @@ module EventCalendar
     end
     
     def day_link(text, date)
-      link_to(text, "/calendar/#{date.year}/#{date.month}/#{date.day}")
+      link_to(text, calendar_day_path(:year => date.year, :month => date.month, :day => date.day))
     end
   
     private

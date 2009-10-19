@@ -44,7 +44,7 @@ Then if you create and hookup the calendar controller
 routes.rb
 
   map.calendar "/calendar/:year/:month", :controller => "calendar", :action => "index", :year => Time.now.year, :month => Time.now.month
-  map.calendar "/calendar/:year/:month/:day", :controller => "calendar", :action => "index", :year => Time.now.year, :month => Time.now.month, :day => Time.now.month
+  map.calendar_day "/calendar/:year/:month/:day", :controller => "calendar", :action => "index", :year => Time.now.year, :month => Time.now.month, :day => Time.now.day
   
 CalendarController.rb
 
