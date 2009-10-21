@@ -172,7 +172,8 @@ module EventCalendar
                                  last_row..cur,
                                  options[:use_javascript],
                                  &block)
-          cal << "</tr>#{event_row(content, min_height, event_height, event_margin)}<tr>"
+          cal << "</tr>#{event_row(content, min_height, event_height, event_margin)}"
+          cal << "<tr>" unless cur == last
           last_row = cur + 1
         end
       end
