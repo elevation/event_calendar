@@ -1,12 +1,23 @@
-Description:
-    Copies stylesheet, javascript, and sample background image files to the public folder.
+Usage:
 
-Example:
-    ./script/generate event_calendar
+    script/generate event_calendar [EVENT_MODEL VIEW_NAME]
 
-    This will create:
-        public/stylesheets/event_calendar.css
-        public/javascripts/event_calendar.js
-        public/images/event_calendar
-        public/images/event_calendar/85_bg.gif
-        public/images/event_calendar/120_bg.gif
+  This will create:
+      
+    # static files
+      public/stylesheets/event_calendar.css
+      public/javascripts/event_calendar.js
+      public/images/event_calendar
+      public/images/event_calendar/85_bg.gif
+      public/images/event_calendar/120_bg.gif
+      
+    # Unless --static-only option is given
+    # MVC and supporting files (depending on model and view name)
+      app/models/event.rb
+      app/controllers/calendar_controller.rb
+      app/views/calendar
+      app/views/calendar/index.html.erb
+      app/helpers/calendar_helper.rb
+      db/migrate
+      db/migrate/XXXX_create_events.rb
+      route map.calendar

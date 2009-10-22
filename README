@@ -14,12 +14,21 @@ Install
 
 script/plugin install git://github.com/elevation/event_calendar.git
 
-To generate stylesheet, javascript, and sample bg grid images:
 
-script/generate event_calendar
+To generate the necessary static files AND the example below:
 
+  script/generate event_calendar
 
-Example
+Note, you can change the default event model name (Event) and view name (Calendar):
+
+  script/generate event_calendar EventModel ViewName
+
+To generate ONLY the stylesheet, javascript, and sample bg grid images:
+
+  script/generate event_calendar --static-only
+  
+
+Example | created by the default generator
 =======
 
 Say you have an event model, created with a migration like this:
@@ -116,6 +125,7 @@ The default options for the calendar are:
   }
   
 You can override any of these by passing your options to the calendar method.
+
 
 NOTES
 =====
