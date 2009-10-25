@@ -1,8 +1,8 @@
 /*
   Calendar theme, based on Geoffrey Grosenbach http://nubyonrails.com
-  
-  Colors: 
-    Tan: ecede2 
+
+  Colors:
+    Tan: ecede2
     Turq: 003355
     Cream: ffffdd
 */
@@ -18,7 +18,11 @@
 }
 
 .calendar th {
-  padding-bottom: 5px;
+  padding: 0 0 5px 0;
+}
+
+.calendar td {
+  padding: 0;
 }
 
 th.monthName {
@@ -76,12 +80,12 @@ th.monthName {
 }
 
 /* Event blocks */
-.events { 
-  position: relative; 
+.events {
+  position: relative;
   border-bottom: 1px solid #d5d5d5;
   border-left: 1px solid #d5d5d5;
 }
- 
+
 .event {
   overflow: hidden;
   text-align: left;
@@ -93,10 +97,16 @@ th.monthName {
 .event :hover {
   background-color: #2EAC6A;
 }
- 
-.event div { 
+
+.event div, .event span {
   cursor: pointer;
-  padding-left: 6px; 
-  color:#ffffff; 
+  padding-left: 6px;
+  color:#ffffff;
   text-decoration: none;
+  display: block;
+}
+
+.event a {
+  display: block;
+  height: 100%;
 }

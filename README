@@ -121,7 +121,8 @@ The default options for the calendar are:
     :event_width => 85,
     :event_height => 18,
     :min_height => 70,
-    :event_margin => 2
+    :event_margin => 2,
+    :use_javascript => true
   }
   
 You can override any of these by passing your options to the calendar method.
@@ -144,6 +145,8 @@ Helper/View calendar options:
 
 
 * The event select color is set in the event_calendar.js file.
+
+* If you set use_javascript to false, cleaner HTML will be output, without inline Javascript, but events spanning multiple days will not be displayed correctly. This option should therefore only be used if your calendar uses only single-day events.
 
 
 TODO

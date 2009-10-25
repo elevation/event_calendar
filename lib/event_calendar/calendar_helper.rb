@@ -31,6 +31,10 @@ module EventCalendar
     # :month_name_text => nil # Displayed center in header row. Defaults to current month name from Date::MONTHNAMES hash.
     # :previous_month_text => nil # Displayed left of the month name if set
     # :next_month_text => nil # Displayed right of the month name if set
+    # :use_javascript => true # Outputs HTML with inline javascript so events spanning multiple days will be highlighted.
+    # If this option is false, cleaner HTML will be output, but events spanning multiple days will 
+    # not be highlighted correctly on hover, so it is only really useful if you know your calendar
+    # will only have single-day events. Defaults to true.
     #
     # For more customization, you can pass a code block to this method, that will get one argument, a Date object,
     # and return a values for the individual table cells. The block can return an array, [cell_text, cell_attrs],
@@ -83,7 +87,8 @@ module EventCalendar
         :event_width => 85,
         :event_height => 18,
         :min_height => 70,
-        :event_margin => 2
+        :event_margin => 2,
+        :use_javascript => true
       }
       options = defaults.merge options
     
@@ -121,9 +126,9 @@ module EventCalendar
       cal << %(</tr><tr class="#{options[:day_name_class]}">)
       day_names.each do |d|
         unless d[options[:abbrev]].eql? d
-          cal << "<th scope='col'><span title='#{d}'>#{d[options[:abbrev]]}</span></th>"
+          cal << %(<th scope="col"><span title="#{d}">#{d[options[:abbrev]]}</span></th>)
         else
-          cal << "<th scope='col'>#{d[options[:abbrev]]}</th>"
+          cal << %(<th scope="col">#{d[options[:abbrev]]}</th>)
         end
       end
       cal << "</tr></thead><tbody><tr>"
@@ -160,6 +165,7 @@ module EventCalendar
                                  event_margin,
                                  start_row,
                                  last_row..cur,
+                                 options[:use_javascript],
                                  &block)
           cal << "</tr>#{event_row(content, min_height, event_height, event_margin)}<tr>"
           last_row = cur + 1
@@ -186,6 +192,7 @@ module EventCalendar
                                event_margin,
                                start_row,
                                last_row..(beginning_of_week(last + 7, first_weekday) - 1),
+                               options[:use_javascript],
                                &block)
         cal << "</tr>#{event_row(content, min_height, event_height, event_margin)}"
       end
@@ -194,7 +201,7 @@ module EventCalendar
   
     private
   
-    def calendar_row(event_strips, event_width, event_height, event_margin, start, date_range, &block)
+    def calendar_row(event_strips, event_width, event_height, event_margin, start, date_range, use_javascript, &block)
       start_date = date_range.first
       range = ((date_range.first - start).to_i)...((date_range.last - start + 1).to_i)
       idx = -1
@@ -215,7 +222,7 @@ module EventCalendar
               # Event somewhere on this row
               # add 2 times the number of days into the week to account for borders
               cur_offs = (event_width*days_in_week) - 1
-              event_content(event, dates[1]-dates[0]+1, cur_offs, idx, event_width, event_height, event_margin, &block)
+              event_content(event, dates[1]-dates[0]+1, cur_offs, idx, event_width, event_height, event_margin, use_javascript, &block)
             else
               nil
             end
@@ -232,15 +239,17 @@ module EventCalendar
       end
       event_height_total = (event_height+event_margin)*num_events + event_margin
       height = [min_height, event_height_total].max
-      "<tr><td colspan=\"7\" class='event_row'><div class=\"events\" style=\"height:#{height}px\">#{content.join}</div><div class=\"clear\"></div></td></tr>"
+      %(<tr><td colspan="7" class="event_row"><div class="events" style="height:#{height}px">#{content.join}</div><div class="clear"></div></td></tr>)
     end
   
-    def event_content(event, days, cur_offs, idx, event_width, event_height, event_margin, &block)
+    def event_content(event, days, cur_offs, idx, event_width, event_height, event_margin, use_javascript, &block)
       cal = ""
-      cal << "<div event_id='#{event.id}' day='#{event.start_at.day}' color='#{event.color}' "
-      cal << "class='event event_#{event.id}' "
-      cal << "style='background: #{event.color}; width: #{event_width*days}px; height: #{event_height}px; top: #{idx*(event_height+event_margin)+event_margin}px; left:#{cur_offs}px;' "
-      cal << "onmouseover='select_event(this, true);' onmouseout='select_event(this, false);' "
+
+      cal << %(<div )
+      cal << %(event_id="#{event.id}" day="#{event.start_at.day}" color="#{event.color}" ) if use_javascript
+      cal << %(class="event event_#{event.id}" )
+      cal << %(style="background-color: #{event.color}; width: #{event_width*days}px; height: #{event_height}px; top: #{idx*(event_height+event_margin)+event_margin}px; left:#{cur_offs}px;" )
+      cal << %(onmouseover="select_event(this, true);" onmouseout="select_event(this, false);" ) if use_javascript
       cal << "> "
       cal << block.call(event)
       cal << "</div>"
