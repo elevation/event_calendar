@@ -109,4 +109,5 @@ th.monthName {
 .event a {
   display: block;
   height: 100%;
+  text-decoration: none;
 }
