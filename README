@@ -27,6 +27,9 @@ To generate ONLY the stylesheet, javascript, and sample bg grid images:
 
   script/generate event_calendar --static-only
   
+To generate jquery (javascript), include the option: --use-jquery
+
+  
 
 Example | created by the default generator
 =======
