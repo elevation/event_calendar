@@ -54,6 +54,7 @@ routes.rb
 
   map.calendar "/calendar/:year/:month", :controller => "calendar", :action => "index", :year => Time.now.year, :month => Time.now.month
 
+  
 CalendarController.rb
 
   def index
@@ -122,7 +123,8 @@ The default options for the calendar are:
     :event_height => 18,
     :min_height => 70,
     :event_margin => 2,
-    :use_javascript => true
+    :use_javascript => true,
+    :link_to_day_action => false
   }
   
 You can override any of these by passing your options to the calendar method.
@@ -147,6 +149,16 @@ Helper/View calendar options:
 * The event select color is set in the event_calendar.js file.
 
 * If you set use_javascript to false, cleaner HTML will be output, without inline Javascript, but events spanning multiple days will not be displayed correctly. This option should therefore only be used if your calendar uses only single-day events.
+
+
+* The link_to_day_action option will make the calendar's day numbers links to the given Rails action. Note, you'll probably want a corresponding route, controller action, and view to go with this action. Example:
+  
+Helper/View calendar option:
+  :link_to_day_action => "day"
+  
+Route (the controller is the same as your other calendar route):
+  map.calendar_day "/calendar/:year/:month/:day", :controller => "calendar", :action => "day"
+  
 
 
 TODO
