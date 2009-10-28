@@ -17,7 +17,7 @@ class EventCalendarGenerator < Rails::Generator::Base
       # static files
       m.file "stylesheet.css", "public/stylesheets/event_calendar.css"
       
-			script = ['jquery', 'jq'].include?(ARGV[0]) ? 'jq_javascript.js' : 'javascript.js'
+			script = options[:use_jquery] ? 'jq_javascript.js' : 'javascript.js'
 		  m.file script, "public/javascripts/event_calendar.js"
       
 			m.directory "public/images/event_calendar"
@@ -44,5 +44,7 @@ class EventCalendarGenerator < Rails::Generator::Base
     opt.separator 'Options:'
     opt.on("--static-only",
       "Only generate the static files. (stylesheet, javascript, and images)") { |v| options[:static_only] = v }
+    opt.on("--use-jquery",
+      "Use jquery template file when generating the javascript.") { |v| options[:use_jquery] = v }
   end
 end
