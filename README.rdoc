@@ -1,0 +1,207 @@
+==EventCalendar
+
+Easily show multiple, overlapping events across calendar days and rows.
+See http://dev.elevationblog.com/2009/7/23/event-calendar-rails-plugin for a screenshot.
+
+Based off of James Urquhart's http://www.cuppadev.co.uk/webdev/making-a-real-calendar-in-rails/ which in turn is based on Geoffrey Grosenbach's CalendarHelper.
+
+After install, the "calendar" method will be available within your views.
+
+
+==Install
+
+  script/plugin install git://github.com/elevation/event_calendar.git
+
+To generate the necessary static files AND the example below:
+
+  script/generate event_calendar
+
+Options:
+
+* --static-only: Only generate the stylesheet, javascript, and sample bg grid images
+* --use-jquery: Generate jquery javascript
+
+You can change the default event model name (Event) and view name (Calendar) by passing in two name arguments:
+
+  script/generate event_calendar EventModel ViewName
+  
+
+==Generated Files
+
+Make sure to include the stylesheet and javascript in your layout/view.
+
+====Static files
+
+  public/stylesheets/event_calendar.css
+  public/javascripts/event_calendar.js
+  public/images/event_calendar
+  public/images/event_calendar/85_bg.gif
+  public/images/event_calendar/120_bg.gif
+
+Unless the --static-only option is given, the following will be generated. Names will differ if name arguments were passed to the generator.
+
+====db/migrate/XXXX_create_events.rb
+
+  class CreateEvents < ActiveRecord::Migration
+    def self.up
+      create_table :events do |t|
+        t.string :name
+        t.datetime :start_at
+        t.datetime :end_at
+
+        t.timestamps
+      end
+    end
+
+    def self.down
+      drop_table :events
+    end
+  end
+  
+At minimum we need to have start_at and end_at fields.
+
+An event can also have a *color* field (hex value stored as a string) which determines the color of the event.
+Or simply override the default virtual attribute on the model. For example, if events are associated to a calendar model, then the events can get their color from the calendar.
+
+====app/models/event.rb
+  
+  class Event < ActiveRecord::Base
+    has_event_calendar
+  end
+
+====config/routes.rb
+
+  map.calendar "/calendar/:year/:month", :controller => "calendar", :action => "index", :year => Time.now.year, :month => Time.now.month
+
+====app/controllers/calendar_controller.rb
+  
+  class CalendarController < ApplicationController
+
+    def index
+      @month = params[:month].to_i
+      @year = params[:year].to_i
+
+      @shown_month = Date.civil(@year, @month)
+
+      @event_strips = Event.event_strips_for_month(@shown_month)
+    end
+
+  end
+
+====app/helpers/calendar_helper.rb
+
+Some helper methods are created, but you could put this in the view. The key is our calendar method, which takes some options.
+
+  module CalendarHelper
+    def month_link(month_date)
+      link_to(month_date.strftime("%B"), {:month => month_date.month, :year => month_date.year})
+    end
+  
+    # custom options for this calendar
+    def event_calendar_options
+      { 
+        :year => @year,
+        :month => @month,
+        :event_strips => @event_strips,
+        :month_name_text => @shown_month.strftime("%B %Y"),
+        :previous_month_text => "<< " + month_link(@shown_month.last_month),
+        :next_month_text => month_link(@shown_month.next_month) + " >>"
+      }
+    end
+
+    def event_calendar
+      calendar event_calendar_options do |event|
+        "<a href='/events/#{event.id}' title=\"#{h(event.name)}\"><div>#{h(event.name)}</div></a>"
+      end
+    end
+  end
+  
+Notice you can pass in a block to the calendar method. In this example I'm passing a link to the event details, and displaying the event's name.
+
+====app/views/calendar/index.html.erb
+
+Then in calendar view, simply:
+
+  <%= event_calendar %>
+
+
+==Default Options
+
+The default options for the calendar are:
+
+  defaults = {
+    :year => Time.zone.now.year,
+    :month => Time.zone.now.month,
+    :table_class => 'calendar',
+    :month_name_class => 'monthName',
+    :other_month_class => 'otherMonth',
+    :day_name_class => 'dayName',
+    :day_class => 'day',
+    :abbrev => (0..2),
+    :first_day_of_week => 0, # See note below when setting this
+    :accessible => false,
+    :show_today => true,
+    :month_name_text => Time.zone.now.strftime("%B %Y"),
+    :previous_month_text => nil,
+    :next_month_text => nil,
+    :start => nil,
+    :event_strips => [],
+    :event_width => 85,
+    :event_height => 18,
+    :min_height => 70,
+    :event_margin => 2,
+    :use_javascript => true,
+    :link_to_day_action => false
+  }
+  
+You can override any of these by passing your options to the calendar method. In the above eample, update the event_calendar_options helper method.
+
+
+==NOTES
+
+* If you want to change the <b>first day of the week</b> from the default of Sunday (0), then set the new value in an instance variable and pass it to event_strips_for_month (in the controller), and to the event calendar options (in the helper/view).
+
+  Controller:
+    @first_day_of_week = 1
+    @event_strips = Event.event_strips_for_month(@shown_month, @first_day_of_week)
+  
+  Helper/View calendar options:
+    :first_day_of_week => @first_day_of_week
+    
+* If you need access to the events, not just the event strips, then instead of calling event_strips_for_month call these 3 methods:
+
+    start_d, end_d = Event.get_start_and_end_dates(@shown_month) # optionally pass in @first_day_of_week
+    @events = Event.events_for_date_range(start_d, end_d)
+    @event_strips = Event.create_event_strips(start_d, end_d, @events)
+
+* The event <b>select color</b> is set in the event_calendar.js file.
+
+====Options
+
+* *event_width*: You will need to change the .calendar background-image in the CSS file. There are two images included:
+  * 85px
+  * 120px
+
+* *use_javascript*: If you set it to false, cleaner HTML will be output, without inline Javascript, but events spanning multiple days will not be displayed correctly. This option should therefore only be used if your calendar uses only single-day events.
+
+
+* *link_to_day_action*: Will make the calendar's day numbers links to the given Rails action. Note, you'll probably want a corresponding route, controller action, and view to go with this action. Example:
+  
+  Helper/View calendar option:
+    :link_to_day_action => "day"
+  
+  Route (the controller is the same as your other calendar route):
+    map.calendar_day "/calendar/:year/:month/:day", :controller => "calendar", :action => "day"
+  
+
+
+==TODO
+
+Add tests!
+
+
+==Contributors
+
+Jeff Schuil
+
+Copyright (c) 2009 Elevation, released under the MIT license
