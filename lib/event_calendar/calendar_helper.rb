@@ -244,8 +244,9 @@ module EventCalendar
     end
   
     def event_row(content, min_height, event_height, event_margin)
-      num_events = content.inject(0) do |sum, strip| 
-        strip.blank? ? sum + 0 : sum + 1
+      num_events = 0
+      content.each_with_index do |strip, index|    
+        num_events = index + 1 unless strip.blank?
       end
       event_height_total = (event_height+event_margin)*num_events + event_margin
       height = [min_height, event_height_total].max
