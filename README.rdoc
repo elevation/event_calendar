@@ -1,11 +1,12 @@
 ==EventCalendar
 
 Easily show multiple, overlapping events across calendar days and rows.
+
 See http://dev.elevationblog.com/2009/7/23/event-calendar-rails-plugin for a screenshot.
 
-Based off of James Urquhart's http://www.cuppadev.co.uk/webdev/making-a-real-calendar-in-rails/ which in turn is based on Geoffrey Grosenbach's CalendarHelper.
-
 After install, the "calendar" method will be available within your views.
+
+To customize the look, modify the included stylesheet and/or change the default options.
 
 
 ==Install
@@ -18,7 +19,7 @@ To generate the necessary static files AND the example below:
 
 Options:
 
-* --static-only: Only generate the stylesheet, javascript, and sample bg grid images
+* --static-only: Only generate the stylesheet and javascript
 * --use-jquery: Generate jquery javascript
 
 You can change the default event model name (Event) and view name (Calendar) by passing in two name arguments:
@@ -34,9 +35,6 @@ Make sure to include the stylesheet and javascript in your layout/view.
 
   public/stylesheets/event_calendar.css
   public/javascripts/event_calendar.js
-  public/images/event_calendar
-  public/images/event_calendar/85_bg.gif
-  public/images/event_calendar/120_bg.gif
 
 Unless the --static-only option is given, the following will be generated. Names will differ if name arguments were passed to the generator.
 
@@ -111,7 +109,7 @@ Some helper methods are created, but you could put this in the view. The key is 
 
     def event_calendar
       calendar event_calendar_options do |event|
-        "<a href='/events/#{event.id}' title=\"#{h(event.name)}\"><div>#{h(event.name)}</div></a>"
+        %(<a href="/events/#{event.id}" title="#{h(event.name)}">#{h(event.name)}</a>)
       end
     end
   end
@@ -132,32 +130,50 @@ The default options for the calendar are:
   defaults = {
     :year => Time.zone.now.year,
     :month => Time.zone.now.month,
-    :table_class => 'calendar',
-    :month_name_class => 'monthName',
-    :other_month_class => 'otherMonth',
-    :day_name_class => 'dayName',
-    :day_class => 'day',
     :abbrev => (0..2),
     :first_day_of_week => 0, # See note below when setting this
-    :accessible => false,
     :show_today => true,
     :month_name_text => Time.zone.now.strftime("%B %Y"),
     :previous_month_text => nil,
     :next_month_text => nil,
-    :start => nil,
     :event_strips => [],
-    :event_width => 85,
+    
+    # it would be nice to have these in the CSS file
+    # but they are needed to perform height calculations
+    :width => nil,
+    :height => 500, 
+    :day_names_height => 18,
+    :day_nums_height => 18,
     :event_height => 18,
-    :min_height => 70,
-    :event_margin => 2,
+    :event_margin => 1,
+    :event_padding_top => 1,
+    
     :use_javascript => true,
     :link_to_day_action => false
   }
   
-You can override any of these by passing your options to the calendar method. In the above eample, update the event_calendar_options helper method.
+You can override any of these by passing your options to the calendar method. In the above example, update the event_calendar_options helper method.
+
+====Details
+
+* See the notes in the plugin's calendar_helper.rb for more info.
+
+* *width*: Optional, if none is given it will stretch to the containing element.
+
+* *height*: Defaults to 500px. This is the approx minimum total height of the calendar. It could be greater if a calendar row(s) need to stretch to fit additional events.
+
+* *use_javascript*: If you set it to false, cleaner HTML will be output, without inline Javascript, but events spanning multiple days will not be displayed correctly. This option should therefore only be used if your calendar uses only single-day events.
+
+* *link_to_day_action*: Will make the calendar's day numbers links to the given Rails action. Note, you'll probably want a corresponding route, controller action, and view to go with this action. Example:
+  
+  Helper/View calendar option:
+    :link_to_day_action => "day"
+  
+  Route (the controller is the same as your other calendar route):
+    map.calendar_day "/calendar/:year/:month/:day", :controller => "calendar", :action => "day"
 
 
-==NOTES
+==Notes
 
 * If you want to change the <b>first day of the week</b> from the default of Sunday (0), then set the new value in an instance variable and pass it to event_strips_for_month (in the controller), and to the event calendar options (in the helper/view).
 
@@ -175,33 +191,18 @@ You can override any of these by passing your options to the calendar method. In
     @event_strips = Event.create_event_strips(start_d, end_d, @events)
 
 * The event <b>select color</b> is set in the event_calendar.js file.
-
-====Options
-
-* *event_width*: You will need to change the .calendar background-image in the CSS file. There are two images included:
-  * 85px
-  * 120px
-
-* *use_javascript*: If you set it to false, cleaner HTML will be output, without inline Javascript, but events spanning multiple days will not be displayed correctly. This option should therefore only be used if your calendar uses only single-day events.
-
-
-* *link_to_day_action*: Will make the calendar's day numbers links to the given Rails action. Note, you'll probably want a corresponding route, controller action, and view to go with this action. Example:
   
-  Helper/View calendar option:
-    :link_to_day_action => "day"
-  
-  Route (the controller is the same as your other calendar route):
-    map.calendar_day "/calendar/:year/:month/:day", :controller => "calendar", :action => "day"
-  
-
-
-==TODO
-
-Add tests!
-
 
 ==Contributors
 
-Jeff Schuil
+* Jeff Schuil
+* See commit history for list of additional contributors.
+* Thanks to those who have added features, fixed bugs, and/or reported issues.
+
+== History
+
+* Though EventCalendar has diverged greatly, it was...
+* Originally based off of James Urquhart's http://www.cuppadev.co.uk/webdev/making-a-real-calendar-in-rails/
+* This in turn started as Geoffrey Grosenbach's CalendarHelper.
 
 Copyright (c) 2009 Elevation, released under the MIT license

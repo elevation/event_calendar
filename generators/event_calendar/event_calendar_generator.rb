@@ -20,10 +20,6 @@ class EventCalendarGenerator < Rails::Generator::Base
 			script = options[:use_jquery] ? 'jq_javascript.js' : 'javascript.js'
 		  m.file script, "public/javascripts/event_calendar.js"
       
-			m.directory "public/images/event_calendar"
-      m.file "85_bg.gif", "public/images/event_calendar/85_bg.gif"
-      m.file "120_bg.gif", "public/images/event_calendar/120_bg.gif"
-      
       # MVC and other supporting files
       unless options[:static_only]
         m.template "model.rb.erb", File.join("app/models", "#{@class_name}.rb")

@@ -1,0 +1,13 @@
+== 2009-11-23 / Version 2
+* Complete rewrite of the calendar's HTML generation and styling
+* Event rows are now table cells which span the desired number of columns
+* The width can be set arbitrarily, or it can be left to resize with the containing element
+* Removes the use of background images for displaying the grid
+* Increased ability to style calendar days
+* Removed legacy options, comments, and code
+* Caution, not backwards compatible with some of Version 1's options
+
+== 2009-11-11 / Version 1
+* The initial EventCalendar Rails Plugin
+* Most bugs and issues have been resolved
+* Works, but isn't as flexible as desired

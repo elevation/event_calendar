@@ -7,9 +7,6 @@ Usage:
     # static files
       public/stylesheets/event_calendar.css
       public/javascripts/event_calendar.js
-      public/images/event_calendar
-      public/images/event_calendar/85_bg.gif
-      public/images/event_calendar/120_bg.gif
       
     # Unless --static-only option is given
     # MVC and supporting files (depending on model and view name)
