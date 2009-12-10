@@ -1,11 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + "/lib/insert_routes.rb")
 
 class EventCalendarGenerator < Rails::Generator::Base
-  default_options :static_only => false
+  default_options :static_only => false,
+                  :use_jquery =>  false,
+                  :use_all_day => false
   
   attr_reader :class_name, :view_name
   
-  def initialize(args, options = {})
+  def initialize(args, runtime_options = {})
     super
     usage if args.length > 0 and args.length < 2
     @class_name = (args.shift || "event").underscore
@@ -42,5 +44,7 @@ class EventCalendarGenerator < Rails::Generator::Base
       "Only generate the static files. (stylesheet, javascript, and images)") { |v| options[:static_only] = v }
     opt.on("--use-jquery",
       "Use jquery template file when generating the javascript.") { |v| options[:use_jquery] = v }
+    opt.on("--use-all-day",
+      "Include an 'all_day' field on events, and display appropriately.") { |v| options[:use_all_day] = v }
   end
 end

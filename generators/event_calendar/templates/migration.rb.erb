@@ -4,6 +4,9 @@ class Create<%= class_name.classify.pluralize %> < ActiveRecord::Migration
       t.string :name
       t.datetime :start_at
       t.datetime :end_at
+      <%- if options[:use_all_day] -%>
+      t.boolean :all_day
+      <%- end -%>
 
       t.timestamps
     end

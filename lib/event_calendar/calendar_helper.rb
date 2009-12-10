@@ -17,6 +17,7 @@ module EventCalendar
     # :previous_month_text => nil # Displayed left of the month name if set
     # :next_month_text => nil # Displayed right of the month name if set
     # :event_strips => [] # An array of arrays, encapsulating the event rows on the calendar
+    #
     # :width => nil # Width of the calendar, if none is set then it will stretch the container's width
     # :height => 500 # Approx minimum total height of the calendar (excluding the header).
     #     Height could get added if a day has too many event's to fit.
@@ -25,6 +26,10 @@ module EventCalendar
     # :event_height => 18 # Height of an individual event row
     # :event_margin => 1 # Spacing of the event rows
     # :event_padding_top => 1 # Padding on the top of the event rows (increase to move text down)
+    #
+    # :use_all_day => false # If set to true, will check for an 'all_day' boolean field when displaying an event.
+    #     If it is an all day event, or the event is multiple days, then it will display as usual.
+    #     Otherwise it will display without a background color bar.
     # :use_javascript => true # Outputs HTML with inline javascript so events spanning multiple days will be highlighted.
     #     If this option is false, cleaner HTML will be output, but events spanning multiple days will 
     #     not be highlighted correctly on hover, so it is only really useful if you know your calendar
@@ -33,6 +38,11 @@ module EventCalendar
     #     the day number will be a link. Override the day_link method for greater customization.
     #
     # For more customization, you can pass a code block to this method
+    # The varibles you have to work with in this block are passed in an agruments hash:
+    # :event => The event to be displayed.
+    # :day => The day the event is displayed on. Usually the first day of the event, or the first day of the week,
+    #   if the event spans a calendar row.
+    # :options => All the calendar options in use. (User defined and defaults merged.)
     #
     # For example usage, see README.
     #
@@ -58,8 +68,9 @@ module EventCalendar
         :day_nums_height => 18,
         :event_height => 18,
         :event_margin => 1,
-        :event_padding_top => 1,
+        :event_padding_top => 2,
         
+        :use_all_day => false,
         :use_javascript => true,
         :link_to_day_action => false
       }
@@ -180,16 +191,24 @@ module EventCalendar
               # if the event (after it has been clipped) starts on this date,
               # then create a new cell that spans the number of days
               if dates[0] == day.to_date
+                # check if we should display the bg color or not
+                no_bg = no_event_bg?(event, options)
                 
                 cal << %(<td class="ec-event-cell" colspan="#{(dates[1]-dates[0]).to_i + 1}" )
                 cal << %(style="padding-top: #{options[:event_margin]}px;">)
-                cal << %(<div class="ec-event event_#{event.id}" )
-                cal << %(style="background-color: #{event.color}; )
+                cal << %(<div class="ec-event ec-event-#{event.id} )
+                if no_bg
+                  cal << %(ec-event-no-bg" )
+                  cal << %(style="color: #{event.color}; )
+                else
+                  cal << %(ec-event-bg" )
+                  cal << %(style="background-color: #{event.color}; )
+                end
                 cal << %(padding-top: #{options[:event_padding_top]}px; )
                 cal << %(height: #{options[:event_height] - options[:event_padding_top]}px;" )
                 if options[:use_javascript]
-                  cal << %(event_id="#{event.id}" color="#{event.color}" )
-                  cal << %(onmouseover="select_event(this, true);" onmouseout="select_event(this, false);" )
+                  # custom attributes needed for javascript event highlighting
+                  cal << %(data-event-id="#{event.id}" data-color="#{event.color}" )
                 end
                 cal << %(>)
                 
@@ -202,8 +221,20 @@ module EventCalendar
                   cal << %(<div class="ec-right-arrow"></div>)
                 end
                 
-                # add the additional html that was passed as a block to this helper
-                cal << block.call(event)
+                if no_bg
+                  cal << %(<div class="ec-bullet" style="background-color: #{event.color};"></div>)
+                  # make sure anchor text is the event color
+                  # here b/c CSS 'inherit' color doesn't work in all browsers
+                  cal << %(<style type="text/css">.ec-event-#{event.id} a { color: #{event.color}; }</style>)
+                end
+                
+                if block_given?
+                  # add the additional html that was passed as a block to this helper
+                  cal << block.call({:event => event, :day => day.to_date, :options => options})
+                else
+                  # default content in case nothing is passed in
+                  cal << %(<a href="/events/#{event.id}" title="#{h(event.name)}">#{h(event.name)}</a>)
+                end
                 
                 cal << %(</div></td>)
               end
@@ -239,6 +270,27 @@ module EventCalendar
     # override this in your own helper for greater control
     def day_link(text, date, day_action)
       link_to(text, params.merge(:action => day_action, :day => date.day), :class => 'ec-day-link')
+    end
+    
+    # check if we should display without a background color
+    def no_event_bg?(event, options)
+      options[:use_all_day] && !event.all_day && event.days == 0
+    end
+    
+    # default html for displaying an event's time
+    # to customize: override, or do something similar, in your helper
+    def display_event_time(event, day)
+      time = event.start_at
+      if !event.all_day and time.to_date == day
+        # try to make it display as short as possible
+        fmt = (time.min == 0) ? "%l" : "%l:%M"
+        t = time.strftime(fmt)
+        am_pm = time.strftime("%p") == "PM" ? "p" : ""
+        t += am_pm
+        %(<span class="ec-event-time">#{t}</span>)
+      else
+        ""
+      end
     end
   
     private

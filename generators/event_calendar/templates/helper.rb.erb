@@ -11,13 +11,25 @@ module <%= view_name.classify %>Helper
       :event_strips => @event_strips,
       :month_name_text => @shown_month.strftime("%B %Y"),
       :previous_month_text => "<< " + month_link(@shown_month.last_month),
-      :next_month_text => month_link(@shown_month.next_month) + " >>"
+      :next_month_text => month_link(@shown_month.next_month) + " >>"<%- if options[:use_all_day] -%>,
+      :use_all_day => true
+      <%- end -%>
     }
   end
 
   def event_calendar
-    calendar event_calendar_opts do |event|
+    # args is an argument hash containing :event, :day, and :options
+    calendar event_calendar_opts do |args|
+      <%- if options[:use_all_day] -%>
+      event, day = args[:event], args[:day]
+      html = %(<a href="/events/#{event.id}" title="#{h(event.name)}">)
+      html << display_event_time(event, day)
+      html << %(#{h(event.name)}</a>)
+      html
+      <%- else -%>
+      event = args[:event]
       %(<a href="/events/#{event.id}" title="#{h(event.name)}">#{h(event.name)}</a>)
+      <%- end -%>
     end
   end
 end

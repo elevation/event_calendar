@@ -46,10 +46,6 @@
   white-space: nowrap;
 }
 
-.ec-body a {
-  color: white;
-}
-
 /* Day names */
 .ec-day-names {
   position: absolute;
@@ -170,7 +166,29 @@ a.ec-day-link {
 }
 
 .ec-event :hover {
-  background-color: #2eac6a;
+  /* doesn't look as good as js highlighting */
+  /* background-color: #2eac6a; */
+}
+
+.ec-event-bg a {
+  color: white;
+}
+
+/* used to distinguish non-all_day events */
+.ec-event-no-bg {
+  position: relative;
+  /* padding-left: 5px; */
+}
+
+.ec-event-no-bg a {
+  /* isn't implemented in all browsers */
+  color: inherit;
+}
+
+.ec-event-time {
+  font-size: 85%;
+  font-weight: bold;
+  padding-right: 3px;
 }
 
 
@@ -198,4 +216,18 @@ a.ec-day-link {
   margin-left: auto;
   margin-right: 3px;
   border-left: 4px solid white;
+}
+
+/* remove this to not have a bullet */
+/* don't look as good in ie */
+.ec-bullet {
+  position: absolute;
+  top: 7px;
+  width: 4px;
+  height: 4px;
+  margin-left: -7px;
+  margin-right: auto;
+  -webkit-border-radius: 2px;
+  -khtml-border-radius: 2px;
+  -moz-border-radius: 2px;
 }

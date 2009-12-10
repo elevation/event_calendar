@@ -120,6 +120,7 @@ module EventCalendar
   end
   
   # Instance Methods
+  # Override in your model as needed
   module InstanceMethods
     def year
       date.year
@@ -132,7 +133,11 @@ module EventCalendar
     def day
       date.day
     end
-  
+    
+    def all_day
+      self[:all_day]
+    end
+    
     def color
       self[:color] || '#9aa4ad'
     end

@@ -21,6 +21,7 @@ Options:
 
 * --static-only: Only generate the stylesheet and javascript
 * --use-jquery: Generate jquery javascript
+* --use-all-day: Include an 'all_day' field on events, and display appropriately
 
 You can change the default event model name (Event) and view name (Calendar) by passing in two name arguments:
 
@@ -57,6 +58,8 @@ Unless the --static-only option is given, the following will be generated. Names
   end
   
 At minimum we need to have start_at and end_at fields.
+
+If the '--use-all-day' option is passed to the generator, it will also add a boolean all_day field.
 
 An event can also have a *color* field (hex value stored as a string) which determines the color of the event.
 Or simply override the default virtual attribute on the model. For example, if events are associated to a calendar model, then the events can get their color from the calendar.
@@ -108,7 +111,8 @@ Some helper methods are created, but you could put this in the view. The key is 
     end
 
     def event_calendar
-      calendar event_calendar_options do |event|
+      calendar event_calendar_options do |args|
+        event = args[:event]
         %(<a href="/events/#{event.id}" title="#{h(event.name)}">#{h(event.name)}</a>)
       end
     end
@@ -148,6 +152,7 @@ The default options for the calendar are:
     :event_margin => 1,
     :event_padding_top => 1,
     
+    :use_all_day => false,
     :use_javascript => true,
     :link_to_day_action => false
   }
@@ -162,7 +167,21 @@ You can override any of these by passing your options to the calendar method. In
 
 * *height*: Defaults to 500px. This is the approx minimum total height of the calendar. It could be greater if a calendar row(s) need to stretch to fit additional events.
 
-* *use_javascript*: If you set it to false, cleaner HTML will be output, without inline Javascript, but events spanning multiple days will not be displayed correctly. This option should therefore only be used if your calendar uses only single-day events.
+* *use_all_day*: If set to true, will check for an 'all_day' boolean field when displaying an event. If it is an all day event, or the event is multiple days, then it will display as usual. Otherwise it will display without a background color bar.
+
+  Helper/View:
+    :use_all_day => true
+  
+  If using this option, you probably want to also show times for non-all-day events:
+    calendar event_calendar_options do |args|
+      event, day = args[:event], args[:day]
+      html = %(<a href="/events/#{event.id}" title="#{h(event.name)}">)
+      html << display_event_time(event, day)
+      html << %(#{h(event.name)}</a>)
+      html
+    end
+
+* *use_javascript*: If set to false, it won't add custom HTML data attributes that are needed for javascript highlighting. (Note, custom attributes will be valid in HTML 5.) The actual javascript is unobtrusive and found in the event_calendar.js file.
 
 * *link_to_day_action*: Will make the calendar's day numbers links to the given Rails action. Note, you'll probably want a corresponding route, controller action, and view to go with this action. Example:
   
