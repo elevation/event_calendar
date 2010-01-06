@@ -269,7 +269,7 @@ module EventCalendar
     
     # override this in your own helper for greater control
     def day_link(text, date, day_action)
-      link_to(text, params.merge(:action => day_action, :day => date.day), :class => 'ec-day-link')
+      link_to(text, params.merge(:action => day_action, :year => date.year, :month => date.month, :day => date.day), :class => 'ec-day-link')
     end
     
     # check if we should display without a background color
