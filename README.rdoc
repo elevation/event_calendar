@@ -95,7 +95,7 @@ Some helper methods are created, but you could put this in the view. The key is 
 
   module CalendarHelper
     def month_link(month_date)
-      link_to(month_date.strftime("%B"), {:month => month_date.month, :year => month_date.year})
+      link_to(I18n.localize(month_date, :format => "%B"), {:month => month_date.month, :year => month_date.year})
     end
   
     # custom options for this calendar
@@ -104,7 +104,7 @@ Some helper methods are created, but you could put this in the view. The key is 
         :year => @year,
         :month => @month,
         :event_strips => @event_strips,
-        :month_name_text => @shown_month.strftime("%B %Y"),
+        :month_name_text => I18n.localize(@shown_month, :format => "%B %Y"),
         :previous_month_text => "<< " + month_link(@shown_month.last_month),
         :next_month_text => month_link(@shown_month.next_month) + " >>"
       }
@@ -134,7 +134,7 @@ The default options for the calendar are:
   defaults = {
     :year => Time.zone.now.year,
     :month => Time.zone.now.month,
-    :abbrev => (0..2),
+    :abbrev => true,
     :first_day_of_week => 0, # See note below when setting this
     :show_today => true,
     :month_name_text => Time.zone.now.strftime("%B %Y"),
@@ -210,6 +210,26 @@ You can override any of these by passing your options to the calendar method. In
     @event_strips = Event.create_event_strips(start_d, end_d, @events)
 
 * The event <b>select color</b> is set in the event_calendar.js file.
+
+==il8n
+
+To localize month and day names, add the following to your localization file(s) in config/locales:
+
+  date -> formats, day_names, abbr_day_names, month_names, abbr_month_names
+  
+For example, in es.yml:
+
+  es:
+    date:
+      formats:
+        default: "%e/%m/%Y"
+
+      day_names: [Domingo, Lunes, Martes, Miércoles, Jueves, Viernes, Sábado]
+      abbr_day_names: [Dom, Lun, Mar, Mie, Jue, Vie, Sab]
+
+      # Don't forget the nil at the beginning; there's no such thing as a 0th month
+      month_names: [~, Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre]
+      abbr_month_names: [~, Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic]
   
 
 ==Contributors

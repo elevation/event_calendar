@@ -7,9 +7,7 @@ module EventCalendar
     # The following are optional, available for customizing the default behaviour:
     # :month => Time.now.month # The month to show the calendar for. Defaults to current month.
     # :year => Time.now.year # The year to show the calendar for. Defaults to current year.
-    # :abbrev => (0..2) # This option specifies how the day names should be abbreviated.
-    #     Use (0..2) for the first three letters, (0..0) for the first, and
-    #     (0..-1) for the entire name.
+    # :abbrev => true # Abbreviate day names. Reads from the abbr_day_names key in the localization file.
     # :first_day_of_week => 0 # Renders calendar starting on Sunday. Use 1 for Monday, and so on.
     # :show_today => true # Highlights today on the calendar using CSS class.
     # :month_name_text => nil # Displayed center in header row.
@@ -52,7 +50,7 @@ module EventCalendar
       defaults = {
         :year => Time.zone.now.year,
         :month => Time.zone.now.month,
-        :abbrev => (0..2),
+        :abbrev => true,
         :first_day_of_week => 0,
         :show_today => true,
         :month_name_text => Time.zone.now.strftime("%B %Y"),
@@ -77,7 +75,7 @@ module EventCalendar
       options = defaults.merge options
     
       # default month name for the given number
-      options[:month_name_text] ||= Date::MONTHNAMES[options[:month]]
+      options[:month_name_text] ||= I18n.translate(:'date.month_names')[options[:month]]
       
       # make the height calculations
       # tricky since multiple events in a day could force an increase in the set height
@@ -92,7 +90,12 @@ module EventCalendar
       last = Date.civil(options[:year], options[:month], -1)
       
       # create the day names array [Sunday, Monday, etc...]
-      day_names = Date::DAYNAMES.dup
+      day_names = []
+      if options[:abbrev]
+        day_names = I18n.translate(:'date.abbr_day_names')
+      else
+        day_names = I18n.translate(:'date.day_names')
+      end
       options[:first_day_of_week].times do
         day_names.push(day_names.shift)
       end
@@ -127,7 +130,7 @@ module EventCalendar
       cal << %(<table class="ec-day-names" style="height: #{options[:day_names_height]}px;" cellpadding="0" cellspacing="0">)
       cal << %(<tbody><tr>)
       day_names.each do |day_name|
-        cal << %(<th class="ec-day-name" title="#{day_name}">#{day_name.mb_chars[options[:abbrev]]}</th>)
+        cal << %(<th class="ec-day-name" title="#{day_name}">#{day_name}</th>)
       end
       cal << %(</tr></tbody></table>)
       

@@ -1,6 +1,6 @@
 module <%= view_name.classify %>Helper
   def month_link(month_date)
-    link_to(month_date.strftime("%B"), {:month => month_date.month, :year => month_date.year}, :class => 'month_link')
+    link_to(I18n.localize(month_date, :format => "%B"), {:month => month_date.month, :year => month_date.year})
   end
   
   # custom options for this calendar
@@ -9,7 +9,7 @@ module <%= view_name.classify %>Helper
       :year => @year,
       :month => @month,
       :event_strips => @event_strips,
-      :month_name_text => @shown_month.strftime("%B %Y"),
+      :month_name_text => I18n.localize(@shown_month, :format => "%B %Y"),
       :previous_month_text => "<< " + month_link(@shown_month.last_month),
       :next_month_text => month_link(@shown_month.next_month) + " >>"<%- if options[:use_all_day] -%>,
       :use_all_day => true
