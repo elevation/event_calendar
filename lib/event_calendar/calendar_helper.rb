@@ -92,9 +92,9 @@ module EventCalendar
       # create the day names array [Sunday, Monday, etc...]
       day_names = []
       if options[:abbrev]
-        day_names = I18n.translate(:'date.abbr_day_names')
+        day_names.concat(I18n.translate(:'date.abbr_day_names'))
       else
-        day_names = I18n.translate(:'date.day_names')
+        day_names.concat(I18n.translate(:'date.day_names'))
       end
       options[:first_day_of_week].times do
         day_names.push(day_names.shift)
