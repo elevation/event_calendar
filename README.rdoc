@@ -27,6 +27,14 @@ You can change the default event model name (Event) and view name (Calendar) by 
 
   script/generate event_calendar EventModel ViewName
   
+You can change the start_at and end_at columns for you existing event model by supplying the following parameters:
+
+====app/models/event.rb
+  
+  class Event < ActiveRecord::Base
+    has_event_calendar :start_at_field  => 'custom_start_at', :end_at_field => 'custom_end_at'
+  end
+
 
 ==Generated Files
 
