@@ -7,8 +7,15 @@ require 'spec'
 
 require 'rails'
 require 'active_record'
+require 'action_controller'
+require 'action_view'
 
 require 'spec/fixtures/models'
+
+require 'event_calendar'
+require 'event_calendar/calendar_helper'
+
+require File.dirname(__FILE__) + '/../init.rb'
 
 ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
 ActiveRecord::Migration.verbose = false

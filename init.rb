@@ -1,2 +1,2 @@
-ActiveRecord::Base.extend EventCalendar::PluginMethods
-ActionView::Base.send :include, EventCalendar::CalendarHelper
+ActiveRecord::Base.send :include, EventCalendar
+ActionView::Base.send   :include, EventCalendar::CalendarHelper

@@ -9,4 +9,9 @@ describe "event calendar" do
     event.start_at.should eql( time )
     event.end_at.should eql( time )
   end
+
+  it "should load plugin" do
+    lambda { Event.has_event_calendar }.should_not raise_error
+  end
+
 end

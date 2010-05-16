@@ -1,21 +1,21 @@
 module EventCalendar
   
-  module PluginMethods
-    def has_event_calendar
-      ClassMethods.setup_event_calendar_on self
-    end
+  def self.included(base)
+    base.send :extend, ClassMethods
   end
-  
-  # class Methods
+
   module ClassMethods
-    
-    def self.setup_event_calendar_on(recipient)
-      recipient.extend ClassMethods
-      recipient.class_eval do
-        include InstanceMethods
-      end
+
+    def has_event_calendar(options={})
+      cattr_accessor :start_at_field, :end_at_field 
+      self.start_at_field = ( options[:start_at_field] ||= :start_at).to_s
+      self.end_at_field   = ( options[:end_at_field]   ||= :end_at  ).to_s
+      alias_attribute :start_at, start_at_field unless start_at_field == 'start_at'
+      alias_attribute :end_at,   end_at_field   unless end_at_field   == 'end_at'
+
+      send :include, InstanceMethods
     end
-    
+  
     # For the given month, find the start and end dates
     # Find all the events within this range, and create event strips for them
     def event_strips_for_month(shown_date, first_day_of_week=0)
