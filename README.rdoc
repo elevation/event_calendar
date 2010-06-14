@@ -27,13 +27,7 @@ You can change the default event model name (Event) and view name (Calendar) by 
 
   script/generate event_calendar EventModel ViewName
   
-You can change the start_at and end_at columns for you existing event model by supplying the following parameters:
-
-====app/models/event.rb
-  
-  class Event < ActiveRecord::Base
-    has_event_calendar :start_at_field  => 'custom_start_at', :end_at_field => 'custom_end_at'
-  end
+You can also pass in custom column names for the start and end fields.
 
 
 ==Generated Files
@@ -65,7 +59,7 @@ Unless the --static-only option is given, the following will be generated. Names
     end
   end
   
-At minimum we need to have start_at and end_at fields.
+At minimum we need to have start_at and end_at fields. Altnernatively, you can configure the columns to be used by passing options to has_event_calendar.
 
 If the '--use-all-day' option is passed to the generator, it will also add a boolean all_day field.
 
@@ -76,6 +70,12 @@ Or simply override the default virtual attribute on the model. For example, if e
   
   class Event < ActiveRecord::Base
     has_event_calendar
+
+    # To specify the columns to use call it like this:
+    # 
+    # has_event_calendar :start_at_field  => 'custom_start_at', :end_at_field => 'custom_end_at'
+    # 
+
   end
 
 ====config/routes.rb
@@ -93,6 +93,12 @@ Or simply override the default virtual attribute on the model. For example, if e
       @shown_month = Date.civil(@year, @month)
 
       @event_strips = Event.event_strips_for_month(@shown_month)
+  
+      # To restrict what events are included in the result you can pass additional find options like this:
+      #
+      # @event_strips = Event.event_strips_for_month(@shown_month, :include => :some_relation, :conditions => 'some_relations.some_column = true')
+      #
+
     end
 
   end
