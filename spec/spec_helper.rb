@@ -5,7 +5,6 @@ ENV["RAILS_ENV"]    = "test"
 require 'rubygems'
 require 'spec'
 
-require 'rails'
 require 'active_record'
 require 'action_controller'
 require 'action_view'
