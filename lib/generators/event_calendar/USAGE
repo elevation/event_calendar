@@ -1,0 +1,19 @@
+Example:
+
+  script/generate event_calendar --model-name=bunny --view_name=rabbit
+
+  This will create:
+      
+    # static files
+      public/stylesheets/event_calendar.css
+      public/javascripts/event_calendar.js
+      
+    # Unless --static-only option is given
+      app/models/bunny.rb
+      app/controllers/rabbit_controller.rb
+      app/views/rabbit
+      app/views/rabbit/index.html.erb
+      app/helpers/rabbit_helper.rb
+      db/migrate
+      db/migrate/XXXX_create_bunnies.rb
+      route match rabbit
