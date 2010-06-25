@@ -12,7 +12,7 @@ class EventCalendarGenerator < Rails::Generators::Base
   class_option :controller_name,   :type => :string,  :default => "calendars", :desc => "Override the controller and view name"
   
   def do_it
-    copy_file "stylesheet.css", "public/stylesheets/event_calendar.css"    
+    say "Adding an all_day column", :yellow if options[:use_all_day]
 
     if options[:use_jquery]
       say "Using JQuery for scripting", :yellow
@@ -22,7 +22,7 @@ class EventCalendarGenerator < Rails::Generators::Base
       copy_file 'javascript.js', "public/javascripts/event_calendar.js"
     end
 
-# TODO : why is this not working???? Predicates...
+    copy_file "stylesheet.css", "public/stylesheets/event_calendar.css"    
 
     unless options.static_only?
       template "model.rb.erb", "app/models/#{ model_name}.rb", :class_name => options[:model_name]
@@ -30,9 +30,8 @@ class EventCalendarGenerator < Rails::Generators::Base
       empty_directory "app/views/#{ view_name }"
       template "view.html.erb", File.join("app/views/#{ controller_name }/index.html.erb")
       template "helper.rb.erb", "app/helpers/#{ controller_name }_helper.rb"
-      say "Adding an all_day column", :yellow if options[:use_all_day]
       migration_template "migration.rb.erb", "db/migrate/create_#{ table_name }.rb"
-      route "match '#{ controller_name }(/:year(/:month))' => '#{ controller_name }#index', :as => :#{ controller_name }, :defaults => { :year => Time.zone.now.year, :month => Time.zone.now.month }"
+      route "match '#{ controller_name }(/:year(/:month))' => '#{ controller_name }#index', :as => :#{ named_route_name }, :defaults => { :year => Time.zone.now.year, :month => Time.zone.now.month }"
     end
 
   end
@@ -63,6 +62,14 @@ class EventCalendarGenerator < Rails::Generators::Base
 
   def table_name
     model_name.pluralize
+  end
+
+  def named_route_name
+    if controller_name.include?("/")
+      controller_name.split("/").join("_")
+    else
+      controller_name
+    end
   end
 
   # FIXME: Should be proxied to ActiveRecord::Generators::Base

@@ -1,19 +1,19 @@
 Example:
+  Model and controller names may be specified in either underscore of CamelCase.
 
-  script/generate event_calendar --model-name=bunny --view_name=rabbit
+  rails generate event_calendar --model-name=birthday --controller_name='calendars/birthdays' --use-all-day --use-jquery
 
-  This will create:
+  This will generate:
       
-    # static files
-      public/stylesheets/event_calendar.css
-      public/javascripts/event_calendar.js
-      
-    # Unless --static-only option is given
-      app/models/bunny.rb
-      app/controllers/rabbit_controller.rb
-      app/views/rabbit
-      app/views/rabbit/index.html.erb
-      app/helpers/rabbit_helper.rb
-      db/migrate
-      db/migrate/XXXX_create_bunnies.rb
-      route match rabbit
+    Adding an all_day column
+    Using JQuery for scripting
+       create  public/javascripts/event_calendar.js
+       create  public/stylesheets/event_calendar.css
+       create  app/models/birthday.rb
+       create  app/controllers/calendars_controller.rb
+       create  app/controllers/calendars_controller.rb
+       create  app/views/calendars
+       create  app/views/calendars/index.html.erb
+       create  app/helpers/calendars_helper.rb
+       create  db/migrate/20100625220954_create_birthdays.rb
+        route  match 'calendars/birthdays(/:year(/:month))' => 'calendars/birthdays#index', :as => :calendars_birthdays, :defaults => { :year => Time.zone.now.year, :month => Time.zone.now.month }
