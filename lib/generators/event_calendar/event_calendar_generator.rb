@@ -5,11 +5,11 @@ class EventCalendarGenerator < Rails::Generators::Base
 
   source_root File.expand_path('../templates', __FILE__)
 
-  class_option :static_only,       :type => :boolean, :default => false,      :desc => "Only generate stylesheets and scripts"
-  class_option :use_jquery,        :type => :boolean, :default => false,      :desc => "Use JQuery for scripting"
-  class_option :use_all_day,       :type => :boolean, :default => false,      :desc => "Add an additional all_day column to the database"
-  class_option :model_name,        :type => :string,  :default => "event",    :desc => "Override the default model name"
-  class_option :controller_name,   :type => :string,  :default => "calendar", :desc => "Override the controller and view name"
+  class_option :static_only,       :type => :boolean, :default => false,       :desc => "Only generate stylesheets and scripts"
+  class_option :use_jquery,        :type => :boolean, :default => false,       :desc => "Use JQuery for scripting"
+  class_option :use_all_day,       :type => :boolean, :default => false,       :desc => "Add an additional all_day column to the database"
+  class_option :model_name,        :type => :string,  :default => "event",     :desc => "Override the default model name"
+  class_option :controller_name,   :type => :string,  :default => "calendars", :desc => "Override the controller and view name"
   
   def do_it
     copy_file "stylesheet.css", "public/stylesheets/event_calendar.css"    
@@ -25,32 +25,44 @@ class EventCalendarGenerator < Rails::Generators::Base
 # TODO : why is this not working???? Predicates...
 
     unless options.static_only?
-      template "model.rb.erb", "app/models/#{options[:model_name]}.rb", :class_name => options[:model_name]
-      template "controller.rb.erb", "app/controllers/#{options[:controller_name]}_controller.rb"
-      empty_directory "app/views/#{options[:controller_name]}"
-      template "view.html.erb", File.join("app/views/#{options[:controller_name]}/index.html.erb")
-      template "helper.rb.erb", "app/helpers/#{options[:controller_name]}_helper.rb"
+      template "model.rb.erb", "app/models/#{ model_name}.rb", :class_name => options[:model_name]
+      template "controller.rb.erb", "app/controllers/#{ controller_name }_controller.rb"
+      empty_directory "app/views/#{ view_name }"
+      template "view.html.erb", File.join("app/views/#{ controller_name }/index.html.erb")
+      template "helper.rb.erb", "app/helpers/#{ controller_name }_helper.rb"
       say "Adding an all_day column", :yellow if options[:use_all_day]
-      migration_template "migration.rb.erb", "db/migrate/create_#{options[:model_name].pluralize}.rb"
-      route "match '#{options[:controller_name]}/:year/:month' => '#{options[:controller_name]}#index', :as => :#{options[:controller_name]}, :defaults => { :year => Time.zone.now.year, :month => Time.zone.now.month }"
+      migration_template "migration.rb.erb", "db/migrate/create_#{ table_name }.rb"
+      route "match '#{ controller_name }(/:year(/:month))' => '#{ controller_name }#index', :as => :#{ controller_name }, :defaults => { :year => Time.zone.now.year, :month => Time.zone.now.month }"
     end
 
   end
 
-  def class_name
+  def model_class_name
     options[:model_name].classify
   end
 
-  def controller_name
-    options[:controller_name].classify
+  def model_name
+    model_class_name.underscore
   end
 
   def view_name
     controller_name
   end
 
+  def controller_class_name
+    options[:controller_name].classify.pluralize
+  end
+
+  def controller_name
+    controller_class_name.underscore
+  end
+
+  def helper_class_name
+    controller_class_name
+  end
+
   def table_name
-    options[:model_name].pluralize
+    model_name.pluralize
   end
 
   # FIXME: Should be proxied to ActiveRecord::Generators::Base
