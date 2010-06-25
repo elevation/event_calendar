@@ -1,4 +1,4 @@
-class <%= view_name.classify %>Controller < ApplicationController
+class <%= controller_name %>Controller < ApplicationController
   
   def index
     @month = params[:month].to_i
@@ -6,7 +6,7 @@ class <%= view_name.classify %>Controller < ApplicationController
 
     @shown_month = Date.civil(@year, @month)
 
-    @event_strips = <%= class_name.classify %>.event_strips_for_month(@shown_month)
+    @event_strips = <%= class_name %>.event_strips_for_month(@shown_month)
   end
   
 end
