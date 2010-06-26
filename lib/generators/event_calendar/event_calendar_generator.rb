@@ -7,7 +7,8 @@ class EventCalendarGenerator < Rails::Generators::Base
 
   class_option :static_only,       :type => :boolean, :default => false,       :desc => "Only generate stylesheets and scripts"
   class_option :use_jquery,        :type => :boolean, :default => false,       :desc => "Use JQuery for scripting"
-  class_option :use_all_day,       :type => :boolean, :default => false,       :desc => "Add an additional all_day column to the database"
+  class_option :use_all_day,       :type => :boolean, :default => false,       :desc => "Add an additional 'all_day' attribute"
+  class_option :use_color,         :type => :boolean, :default => false,       :desc => "Add an additional 'color' attribute"
   class_option :model_name,        :type => :string,  :default => "event",     :desc => "Override the default model name"
   class_option :controller_name,   :type => :string,  :default => "calendars", :desc => "Override the controller and view name"
   

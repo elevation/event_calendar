@@ -9,7 +9,7 @@ After install, the "calendar" method will be available within your views.
 To customize the look, modify the included stylesheet and/or change the default options.
 
 
-==Install
+==Install Rails 2
 
   script/plugin install git://github.com/elevation/event_calendar.git
 
@@ -29,6 +29,18 @@ You can change the default event model name (Event) and view name (Calendar) by 
   
 You can also pass in custom column names for the start and end fields.
 
+==Install Rails 3 beta 4
+
+  rails plugin install git://github.com/elevation/event_calendar.git
+
+To generate the necessary static files AND the example below:
+
+  rails generate event_calendar
+
+Options:
+
+  rails generate event_calendar --help
+
 
 ==Generated Files
 
@@ -39,7 +51,9 @@ Make sure to include the stylesheet and javascript in your layout/view.
   public/stylesheets/event_calendar.css
   public/javascripts/event_calendar.js
 
-Unless the --static-only option is given, the following will be generated. Names will differ if name arguments were passed to the generator.
+Unless the --static-only option is given, the following will be
+generated. Names will differ if name arguments were passed to the
+generator.
 
 ====db/migrate/XXXX_create_events.rb
 
@@ -59,12 +73,21 @@ Unless the --static-only option is given, the following will be generated. Names
     end
   end
   
-At minimum we need to have start_at and end_at fields. Altnernatively, you can configure the columns to be used by passing options to has_event_calendar.
+At minimum we need to have start_at and end_at fields. Altnernatively,
+you can configure the columns to be used by passing options to
+has_event_calendar.
 
-If the '--use-all-day' option is passed to the generator, it will also add a boolean all_day field.
+If the '--use-all-day' option is passed to the generator, it will also
+add a boolean all_day field. Set :start_at to be any time on the day
+of the event and set :all_day to true. When :start_at and :end_at are
+written to the database they are changed to 00:00:00 and 23:59:59
+respectively.
 
-An event can also have a *color* field (hex value stored as a string) which determines the color of the event.
-Or simply override the default virtual attribute on the model. For example, if events are associated to a calendar model, then the events can get their color from the calendar.
+An event can also have a *color* field (any string which is a valid
+CSS color) which determines the color of the event.  Or simply
+override the default virtual attribute on the model. For example, if
+events are associated to a calendar model, then the events can get
+their color from the calendar.
 
 ====app/models/event.rb
   

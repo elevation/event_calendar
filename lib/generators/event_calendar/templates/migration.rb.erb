@@ -5,9 +5,12 @@ class Create<%= table_name.camelize %> < ActiveRecord::Migration
       t.datetime :start_at
       t.datetime :end_at
       <%- if options[:use_all_day] -%>
-      t.boolean :all_day
+      t.boolean :all_day, :default => false
       <%- end -%>
-
+      <%- if options[:use_color] -%>
+      t.string :color
+      <%- end -%>
+      
       t.timestamps
     end
   end

@@ -12,10 +12,10 @@ module EventCalendar
       self.end_at_field   = ( options[:end_at_field]   ||= :end_at  ).to_s
       alias_attribute :start_at, start_at_field unless start_at_field == 'start_at'
       alias_attribute :end_at,   end_at_field   unless end_at_field   == 'end_at'
-
+      before_save :adjust_all_day_dates
       send :include, InstanceMethods
     end
-  
+
     # For the given month, find the start and end dates
     # Find all the events within this range, and create event strips for them
     def event_strips_for_month(shown_date, first_day_of_week=0, find_options = {})
@@ -172,5 +172,17 @@ module EventCalendar
       end
       [clipped_start, clipped_end]
     end
+
+    def adjust_all_day_dates
+      if self[:all_day]
+        self[:start_at] = self[:start_at].beginning_of_day
+        if self[:end_at]
+          self[:end_at] = self[:end_at].beginning_of_day + 1.day - 1.second
+        else
+          self[:end_at] = self[:start_at].beginning_of_day + 1.day - 1.second
+        end
+      end
+    end
+
   end
 end
