@@ -5,15 +5,17 @@ class EventCalendarGenerator < Rails::Generators::Base
 
   source_root File.expand_path('../templates', __FILE__)
 
-  class_option :static_only,       :type => :boolean, :default => false,       :desc => "Only generate stylesheets and scripts"
-  class_option :use_jquery,        :type => :boolean, :default => false,       :desc => "Use JQuery for scripting"
-  class_option :use_all_day,       :type => :boolean, :default => false,       :desc => "Add an additional 'all_day' attribute"
-  class_option :use_color,         :type => :boolean, :default => false,       :desc => "Add an additional 'color' attribute"
-  class_option :model_name,        :type => :string,  :default => "event",     :desc => "Override the default model name"
-  class_option :controller_name,   :type => :string,  :default => "calendars", :desc => "Override the controller and view name"
+  argument :model_name, :optional => true, :default => 'event'
+  argument :controller_name, :optional => true, :default => 'calendar'
+  
+  class_option :static_only,  :type => :boolean, :default => false, :desc => "Only generate stylesheets and scripts"
+  class_option :use_jquery,   :type => :boolean, :default => false, :desc => "Use JQuery for scripting"
+  class_option :use_all_day,  :type => :boolean, :default => false, :desc => "Add an additional 'all_day' attribute"
+  class_option :use_color,    :type => :boolean, :default => false, :desc => "Add an additional 'color' attribute"
   
   def do_it
     say "Adding an all_day column", :yellow if options[:use_all_day]
+    say "Adding a color column", :yellow if options[:use_color]
 
     if options[:use_jquery]
       say "Using JQuery for scripting", :yellow
@@ -23,22 +25,22 @@ class EventCalendarGenerator < Rails::Generators::Base
       copy_file 'javascript.js', "public/javascripts/event_calendar.js"
     end
 
-    copy_file "stylesheet.css", "public/stylesheets/event_calendar.css"    
+    copy_file "stylesheet.css", "public/stylesheets/event_calendar.css"
 
     unless options.static_only?
-      template "model.rb.erb", "app/models/#{ model_name}.rb", :class_name => options[:model_name]
-      template "controller.rb.erb", "app/controllers/#{ controller_name }_controller.rb"
-      empty_directory "app/views/#{ view_name }"
-      template "view.html.erb", File.join("app/views/#{ controller_name }/index.html.erb")
-      template "helper.rb.erb", "app/helpers/#{ controller_name }_helper.rb"
-      migration_template "migration.rb.erb", "db/migrate/create_#{ table_name }.rb"
-      route "match '#{ controller_name }(/:year(/:month))' => '#{ controller_name }#index', :as => :#{ named_route_name }, :defaults => { :year => Time.zone.now.year, :month => Time.zone.now.month }"
+      template "model.rb.erb", "app/models/#{model_name}.rb"
+      template "controller.rb.erb", "app/controllers/#{controller_name}.rb"
+      empty_directory "app/views/#{view_name}"
+      template "view.html.erb", File.join("app/views/#{view_name}/index.html.erb")
+      template "helper.rb.erb", "app/helpers/#{helper_name}.rb"
+      migration_template "migration.rb.erb", "db/migrate/create_#{table_name}.rb"
+      route "match '/#{view_name}(/:year(/:month))' => '#{view_name}#index', :as => :#{named_route_name}, :constraints => {:year => /\\d{4}/, :month => /\\d{1,2}/}"
     end
 
   end
 
   def model_class_name
-    options[:model_name].classify
+    @model_name.classify
   end
 
   def model_name
@@ -46,11 +48,11 @@ class EventCalendarGenerator < Rails::Generators::Base
   end
 
   def view_name
-    controller_name
+    @controller_name.underscore
   end
 
   def controller_class_name
-    options[:controller_name].classify.pluralize
+    "#{@controller_name}_controller".classify
   end
 
   def controller_name
@@ -58,7 +60,11 @@ class EventCalendarGenerator < Rails::Generators::Base
   end
 
   def helper_class_name
-    controller_class_name
+    "#{@controller_name}_helper".classify
+  end
+  
+  def helper_name
+    helper_class_name.underscore
   end
 
   def table_name
@@ -66,10 +72,10 @@ class EventCalendarGenerator < Rails::Generators::Base
   end
 
   def named_route_name
-    if controller_name.include?("/")
-      controller_name.split("/").join("_")
+    if view_name.include?("/")
+      view_name.split("/").join("_")
     else
-      controller_name
+      view_name
     end
   end
 

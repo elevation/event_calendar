@@ -1,3 +1,14 @@
+== 2010-07-02 / Version 2.3
+* Added Rails 3 generators
+* Minor improvement to the generated route. Default year and month are set in the controller instead.
+
+== 2010-06-14 / Version 2.2
+* Refactored plugin pattern to allow for class attributes.
+* You can now pass in custom column names for the start and end fields.
+    has_event_calendar :start_at_field  => 'custom_start_at', :end_at_field => 'custom_end_at'
+* Can pass additional find conditions to event_strips_for_month.
+* Added rpsec with a few specs.
+
 == 2009-12-09 / Version 2.1
 * Added the 'use_all_day' option. If this is set to true (by default it is false), it will check for an 'all_day' boolean field when displaying an event. If it is an all day event, or the event is multiple days, then it will display as usual. Otherwise it will display without a background color bar.
 * Added a --use-all-day option to the generator

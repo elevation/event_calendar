@@ -1,8 +1,8 @@
-class <%= controller_class_name %>Controller < ApplicationController
+class <%= controller_class_name %> < ApplicationController
   
   def index
-    @month = params[:month].to_i
-    @year = params[:year].to_i
+    @month = (params[:month] || Time.zone.now.month).to_i
+    @year = (params[:year] || Time.zone.now.year).to_i
 
     @shown_month = Date.civil(@year, @month)
 
