@@ -7,6 +7,7 @@ module EventCalendar
     # The following are optional, available for customizing the default behaviour:
     # :month => Time.now.month # The month to show the calendar for. Defaults to current month.
     # :year => Time.now.year # The year to show the calendar for. Defaults to current year.
+    # :dates => (start_date .. end_date) # Show specific range of days. Defaults to :year, :month.
     # :abbrev => true # Abbreviate day names. Reads from the abbr_day_names key in the localization file.
     # :first_day_of_week => 0 # Renders calendar starting on Sunday. Use 1 for Monday, and so on.
     # :show_today => true # Highlights today on the calendar using CSS class.
@@ -48,12 +49,12 @@ module EventCalendar
       block ||= Proc.new {|d| nil}
  
       defaults = {
-        :year => Time.zone.now.year,
-        :month => Time.zone.now.month,
+        :year => (Time.zone || Time).now.year,
+        :month => (Time.zone || Time).now.month,
         :abbrev => true,
         :first_day_of_week => 0,
         :show_today => true,
-        :month_name_text => Time.zone.now.strftime("%B %Y"),
+        :month_name_text => (Time.zone || Time).now.strftime("%B %Y"),
         :previous_month_text => nil,
         :next_month_text => nil,
         :event_strips => [],
@@ -86,8 +87,13 @@ module EventCalendar
       end
       
       # the first and last days of this calendar month
-      first = Date.civil(options[:year], options[:month], 1)
-      last = Date.civil(options[:year], options[:month], -1)
+      if options[:dates].is_a?(Range)
+        first = options[:dates].begin
+        last = options[:dates].end
+      else
+        first = Date.civil(options[:year], options[:month], 1)
+        last = Date.civil(options[:year], options[:month], -1)
+      end
       
       # create the day names array [Sunday, Monday, etc...]
       day_names = []
