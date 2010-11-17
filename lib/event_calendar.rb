@@ -1,3 +1,4 @@
+require 'event_calendar/railtie' if defined?(::Rails::Railtie)
 module EventCalendar
   
   def self.included(base)
