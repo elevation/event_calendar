@@ -21,6 +21,16 @@ To generate the necessary static files AND the example below:
 
 === Rails 3
 
+As a gem:
+
+  gem install event-calendar
+  
+Add this to your Gemfile:
+  
+  gem 'event-calendar', :require => 'event_calendar'
+  
+Or as a plugin:
+
   rails plugin install git://github.com/elevation/event_calendar.git
 
 To generate the necessary static files AND the example below:
