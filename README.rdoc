@@ -100,8 +100,14 @@ An event can also have a *color* field (any string which is a valid CSS color) w
   end
 
 ====config/routes.rb
-
+  
+Rails 2:
+  
   map.calendar '/calendar/:year/:month', :controller => 'calendar', :action => 'index', :requirements => {:year => /\d{4}/, :month => /\d{1,2}/}, :year => nil, :month => nil
+  
+Rails 3:
+  
+  match '/calendar(/:year(/:month))' => 'calendar#index', :as => :calendar, :constraints => {:year => /\d{4}/, :month => /\d{1,2}/}
 
 ====app/controllers/calendar_controller.rb
   
@@ -140,7 +146,7 @@ Some helper methods are created, but you could put this in the view. The key is 
         :month => @month,
         :event_strips => @event_strips,
         :month_name_text => I18n.localize(@shown_month, :format => "%B %Y"),
-        :previous_month_text => "<< " + month_link(@shown_month.last_month),
+        :previous_month_text => "<< " + month_link(@shown_month.prev_month),
         :next_month_text => month_link(@shown_month.next_month) + " >>"
       }
     end
