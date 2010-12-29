@@ -5,8 +5,12 @@ require 'rails'
 module EventCalendar
   class Railtie < Rails::Engine
     initializer :after_initialize do
-      ActionController::Base.helper EventCalendar::CalendarHelper
-      ActiveRecord::Base.extend EventCalendar::ClassMethods
+      if defined?(ActionController::Base)
+        ActionController::Base.helper EventCalendar::CalendarHelper
+      end
+      if defined?(ActiveRecord::Base)
+        ActiveRecord::Base.extend EventCalendar::ClassMethods
+      end
     end
   end
 end
