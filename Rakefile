@@ -5,9 +5,9 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "event-calendar"
-    gem.summary = "Rails helper for generating a calendar of events."
+    gem.summary = "Rails helper for showing multiple, overlapping events across calendar days and rows."
     gem.email = ""
-    gem.description = "Rails helper for generating a calendar of events. These events can optionally span multiple days."
+    gem.description = "Rails helper for showing multiple, overlapping events across calendar days and rows."
     gem.authors = ["Jeff Schuil"]
     gem.homepage = "http://github.com/elevation/event_calendar"
     gem.require_path = 'lib'

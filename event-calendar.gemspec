@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{event-calendar}
-  s.version = "2.3.1"
+  s.version = "2.3.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jeff Schuil"]
-  s.date = %q{2010-11-17}
-  s.description = %q{Rails helper for generating a calendar of events. These events can optionally span multiple days.}
+  s.date = %q{2010-12-29}
+  s.description = %q{Rails helper for showing multiple, overlapping events across calendar days and rows.}
   s.email = %q{}
   s.extra_rdoc_files = [
     "README.rdoc"
@@ -58,7 +58,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/elevation/event_calendar}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Rails helper for generating a calendar of events.}
+  s.summary = %q{Rails helper for showing multiple, overlapping events across calendar days and rows.}
   s.test_files = [
     "spec/event_calendar_spec.rb",
     "spec/fixtures/models.rb",
