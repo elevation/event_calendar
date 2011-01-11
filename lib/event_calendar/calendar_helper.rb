@@ -59,6 +59,7 @@ module EventCalendar
         :previous_month_text => nil,
         :next_month_text => nil,
         :event_strips => [],
+        :localize_time => false,
 
         # it would be nice to have these in the CSS file
         # but they are needed to perform height calculations
@@ -293,14 +294,20 @@ module EventCalendar
 
     # default html for displaying an event's time
     # to customize: override, or do something similar, in your helper
-    def display_event_time(event, day)
+    def display_event_time(event, day, localize_time = false)
       time = event.start_at
       if !event.all_day and time.to_date == day
         # try to make it display as short as possible
-        fmt = (time.min == 0) ? "%l" : "%l:%M"
-        t = time.strftime(fmt)
-        am_pm = time.strftime("%p") == "PM" ? "p" : ""
-        t += am_pm
+        if localize_time
+          format = (time.min == 0) ? "hour" : "hour_and_minute"
+          format += time.strftime("%p") == "PM" ? "_pm" : "_am"
+          t = I18n.localize(time, :format => :"calendar.#{format}")
+        else
+          format = (time.min == 0) ? "%l" : "%l:%M"
+          t = time.strftime(format)
+          am_pm = time.strftime("%p") == "PM" ? "p" : ""
+          t += am_pm
+        end
         %(<span class="ec-event-time">#{t}</span>)
       else
         ""
