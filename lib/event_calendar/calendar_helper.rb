@@ -167,7 +167,8 @@ module EventCalendar
         cal << %(<tbody><tr>)
         first_day_of_week.upto(first_day_of_week+6) do |day|
           today_class = (day == Date.today) ? "ec-today-bg" : ""
-          cal << %(<td class="ec-day-bg #{today_class}">&nbsp;</td>)
+          other_month_class = (day < first) || (day > last) ? 'ec-other-month-bg' : ''
+          cal << %(<td class="ec-day-bg #{today_class} #{other_month_class}">&nbsp;</td>)
         end
         cal << %(</tr></tbody></table>)
 
@@ -219,6 +220,7 @@ module EventCalendar
                   cal << %(ec-event-bg" )
                   cal << %(style="background-color: #{event.color}; )
                 end
+
                 cal << %(padding-top: #{options[:event_padding_top]}px; )
                 cal << %(height: #{options[:event_height] - options[:event_padding_top]}px;" )
                 if options[:use_javascript]
