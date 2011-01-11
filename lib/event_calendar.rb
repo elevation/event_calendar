@@ -57,7 +57,7 @@ module EventCalendar
       )
     end
     
-    # Create the various strips that show evetns
+    # Create the various strips that show events.
     def create_event_strips(strip_start, strip_end, events)
       # create an inital event strip, with a nil entry for every day of the displayed days
       event_strips = [[nil] * (strip_end - strip_start + 1)]
