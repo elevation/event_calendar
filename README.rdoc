@@ -180,6 +180,7 @@ The default options for the calendar are:
     :abbrev => true,
     :first_day_of_week => 0, # See note below when setting this
     :show_today => true,
+    :show_header => true,
     :month_name_text => Time.zone.now.strftime("%B %Y"),
     :previous_month_text => nil,
     :next_month_text => nil,

@@ -11,6 +11,7 @@ module EventCalendar
     # :abbrev => true # Abbreviate day names. Reads from the abbr_day_names key in the localization file.
     # :first_day_of_week => 0 # Renders calendar starting on Sunday. Use 1 for Monday, and so on.
     # :show_today => true # Highlights today on the calendar using CSS class.
+    # :show_header => true # Show the calendar's header. (month name, next, & previous links)
     # :month_name_text => nil # Displayed center in header row.
     #     Defaults to current month name from Date::MONTHNAMES hash.
     # :previous_month_text => nil # Displayed left of the month name if set
@@ -59,7 +60,6 @@ module EventCalendar
         :previous_month_text => nil,
         :next_month_text => nil,
         :event_strips => [],
-        :localize_time => false,
 
         # it would be nice to have these in the CSS file
         # but they are needed to perform height calculations
@@ -296,20 +296,15 @@ module EventCalendar
 
     # default html for displaying an event's time
     # to customize: override, or do something similar, in your helper
-    def display_event_time(event, day, localize_time = false)
+    # for instance, you may want to add localization
+    def display_event_time(event, day)
       time = event.start_at
       if !event.all_day and time.to_date == day
         # try to make it display as short as possible
-        if localize_time
-          format = (time.min == 0) ? "hour" : "hour_and_minute"
-          format += time.strftime("%p") == "PM" ? "_pm" : "_am"
-          t = I18n.localize(time, :format => :"calendar.#{format}")
-        else
-          format = (time.min == 0) ? "%l" : "%l:%M"
-          t = time.strftime(format)
-          am_pm = time.strftime("%p") == "PM" ? "p" : ""
-          t += am_pm
-        end
+        format = (time.min == 0) ? "%l" : "%l:%M"
+        t = time.strftime(format)
+        am_pm = time.strftime("%p") == "PM" ? "p" : ""
+        t += am_pm
         %(<span class="ec-event-time">#{t}</span>)
       else
         ""
