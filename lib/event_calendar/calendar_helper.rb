@@ -212,7 +212,7 @@ module EventCalendar
 
                 cal << %(<td class="ec-event-cell" colspan="#{(dates[1]-dates[0]).to_i + 1}" )
                 cal << %(style="padding-top: #{options[:event_margin]}px;">)
-                cal << %(<div class="ec-event ec-event-#{event.id} )
+                cal << %(<div class="ec-event ec-event-#{event.class.name}-#{event.id} )
                 if no_bg
                   cal << %(ec-event-no-bg" )
                   cal << %(style="color: #{event.color}; )
@@ -225,7 +225,7 @@ module EventCalendar
                 cal << %(height: #{options[:event_height] - options[:event_padding_top]}px;" )
                 if options[:use_javascript]
                   # custom attributes needed for javascript event highlighting
-                  cal << %(data-event-id="#{event.id}" data-color="#{event.color}" )
+                  cal << %(data-event-id="#{event.id}" data-event-class="#{event.class.name}" data-color="#{event.color}" )
                 end
                 cal << %(>)
 
@@ -242,7 +242,7 @@ module EventCalendar
                   cal << %(<div class="ec-bullet" style="background-color: #{event.color};"></div>)
                   # make sure anchor text is the event color
                   # here b/c CSS 'inherit' color doesn't work in all browsers
-                  cal << %(<style type="text/css">.ec-event-#{event.id} a { color: #{event.color}; }</style>)
+                  cal << %(<style type="text/css">.ec-event-#{event.class.name}-#{event.id} a { color: #{event.color}; }</style>)
                 end
 
                 if block_given?
@@ -250,7 +250,7 @@ module EventCalendar
                   cal << block.call({:event => event, :day => day.to_date, :options => options})
                 else
                   # default content in case nothing is passed in
-                  cal << %(<a href="/events/#{event.id}" title="#{h(event.name)}">#{h(event.name)}</a>)
+                  cal << %(<a href="/#{event.class.name}/#{event.id}" title="#{h(event.name)}">#{h(event.name)}</a>)
                 end
 
                 cal << %(</div></td>)
