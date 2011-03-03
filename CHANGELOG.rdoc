@@ -1,3 +1,16 @@
+== 2011-04-03 / Version 2.3.3
+* Option to hide the calendar header
+* Add ec-other-month-bg CSS style
+* Remove possible jquery/prototype conflict
+* Improved handling of 'events' of different class types
+
+== 2010-12-29 / Version 2.3.2
+* Use aliased attributes throughout
+* RSpec 2 compatibility
+
+== 2010-11-17 / Version 2.3.1
+* Install as a gem in Rails 3
+
 == 2010-07-02 / Version 2.3
 * Added Rails 3 generators
 * Minor improvement to the generated route. Default year and month are set in the controller instead.
