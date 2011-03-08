@@ -22,13 +22,13 @@ module <%= helper_class_name %>
     calendar event_calendar_opts do |args|
       <%- if options[:use_all_day] -%>
       event, day = args[:event], args[:day]
-      html = %(<a href="/events/#{event.id}" title="#{h(event.name)}">)
+      html = %(<a href="/<%= table_name %>/#{event.id}" title="#{h(event.name)}">)
       html << display_event_time(event, day)
       html << %(#{h(event.name)}</a>)
       html
       <%- else -%>
       event = args[:event]
-      %(<a href="/events/#{event.id}" title="#{h(event.name)}">#{h(event.name)}</a>)
+      %(<a href="/<%= table_name %>/#{event.id}" title="#{h(event.name)}">#{h(event.name)}</a>)
       <%- end -%>
     end
   end
