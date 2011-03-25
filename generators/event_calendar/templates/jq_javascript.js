@@ -8,12 +8,14 @@ jQuery(document).ready(function($) {
   // highlight events that have a background color
   $(".ec-event-bg").live("mouseover", function() {
     event_id = $(this).attr("data-event-id");
-    $(".ec-event-"+event_id).css("background-color", highlight_color);
+		event_class_name = $(this).attr("data-event-class");
+    $("#ec-"+event_class_name+"-"+event_id).css("background-color", highlight_color);
   });
   $(".ec-event-bg").live("mouseout", function() {
     event_id = $(this).attr("data-event-id");
+		event_class_name = $(this).attr("data-event-class");
     event_color = $(this).attr("data-color");
-    $(".ec-event-"+event_id).css("background-color", event_color);
+    $("#ec-"+event_class_name+"-"+event_id).css("background-color", event_color);
   });
   
   // highlight events that don't have a background color

@@ -213,7 +213,10 @@ module EventCalendar
 
                 cal << %(<td class="ec-event-cell" colspan="#{(dates[1]-dates[0]).to_i + 1}" )
                 cal << %(style="padding-top: #{options[:event_margin]}px;">)
-                cal << %(<div class="ec-event #{class_name} ec-#{class_name}-#{event.id} )
+                cal << %(<div id="ec-#{class_name}-#{event.id}" class="ec-event )
+                if class_name != "event"
+                  cal << %(ec-#{class_name} )
+                end
                 if no_bg
                   cal << %(ec-event-no-bg" )
                   cal << %(style="color: #{event.color}; )
