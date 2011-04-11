@@ -14,3 +14,6 @@ module EventCalendar
     end
   end
 end
+
+# Support other ORMs
+require 'event_calendar/orm/mongoid' if defined? Mongoid

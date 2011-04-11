@@ -1,4 +1,3 @@
-require 'event_calendar/railtie' if defined?(::Rails::Railtie)
 module EventCalendar
   
   def self.included(base)
@@ -188,3 +187,5 @@ module EventCalendar
 
   end
 end
+
+require 'event_calendar/railtie' if defined?(::Rails::Railtie)
