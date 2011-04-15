@@ -42,13 +42,13 @@ To generate the necessary static files AND the example below:
   script/generate event_calendar --help
 
   --static-only: Only generate the stylesheet and javascript
-  --use-jquery: Generate jquery javascript
+  --use-jquery: Generate jQuery javascript
+  --use-mootools: Generate MooTools javascript
   --use-all-day: Include an 'all_day' field on events, and display appropriately
 
 You can change the default event model name (Event) and controller/view name (Calendar) by passing in two name arguments:
 
   script/generate event_calendar EventModel ControllerName
-
 
 ==Generated Files
 
@@ -160,6 +160,7 @@ Some helper methods are created, but you could put this in the view. The key is 
   end
   
 Notice you can pass in a block to the calendar method. In this example I'm passing a link to the event details, and displaying the event's name.
+If you are using the MooTools javascript, a Tip will be created with the content of the link's title attribute for displaying additional information.
 
 ====app/views/calendar/index.html.erb
 
@@ -254,6 +255,10 @@ You can override any of these by passing your options to the calendar method. In
     @event_strips = Event.create_event_strips(start_d, end_d, @events)
 
 * The event <b>select color</b> is set in the event_calendar.js file.
+
+===ORM Support
+
+Mongoid is supported out of the box with no additional lines of code in the model. Use the has_event_calendar method as you do with ActiveRecord.
 
 ==il8n
 

@@ -9,7 +9,9 @@ class EventCalendarGenerator < Rails::Generators::Base
   argument :controller_name, :optional => true, :default => 'calendar'
   
   class_option :static_only,  :type => :boolean, :default => false, :desc => "Only generate stylesheets and scripts"
-  class_option :use_jquery,   :type => :boolean, :default => false, :desc => "Use JQuery for scripting"
+  { 'jquery' => 'jQuery', 'mootools' => 'MooTools' }.each do |k,v|
+    class_option :"use_#{k}",   :type => :boolean, :default => false, :desc => "Use #{v} for scripting"  
+  end
   class_option :use_all_day,  :type => :boolean, :default => false, :desc => "Add an additional 'all_day' attribute"
   class_option :use_color,    :type => :boolean, :default => false, :desc => "Add an additional 'color' attribute"
   
@@ -18,8 +20,11 @@ class EventCalendarGenerator < Rails::Generators::Base
     say "Adding a color column", :yellow if options[:use_color]
 
     if options[:use_jquery]
-      say "Using JQuery for scripting", :yellow
+      say "Using jQuery for scripting", :yellow
       copy_file 'jq_javascript.js', "public/javascripts/event_calendar.js"
+    elsif options[:use_mootools]
+      say "Using MooTools for scripting", :yellow
+      copy_file "mt_javascript.js", "public/javascripts/event_calendar.js"
     else
       say "Using Prototype for scripting", :yellow
       copy_file 'javascript.js', "public/javascripts/event_calendar.js"
